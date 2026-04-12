@@ -11,6 +11,9 @@ obj/
 *.userosscache
 *.sln.docstates
 
+# Visual Studio Publish Profiles
+**/PublishProfiles/
+
 # Logs
 *.log
 
