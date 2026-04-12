@@ -74,7 +74,7 @@ Planned high-level structure:
 Planned technical stack for the current phase:
 - ASP.NET Core on .NET 10
 - Razor Pages for the internal CMS Dashboard
-- PostgreSQL for data storage
+- PostgreSQL for data storage (with EF Core InMemory fallback for local UI dev)
 - Entity Framework Core for data access and migrations
 - IIS-compatible hosting model for future deployment targets
 
@@ -95,9 +95,8 @@ Key expectations:
 At a high level, local development should follow this pattern:
 1. clone the repo locally
 2. ensure the pinned .NET SDK version is installed
-3. configure local development settings and database connection values
-4. run migrations or initialize the database baseline
-5. launch the CMS Dashboard locally
+3. ensure `UseInMemoryDb` is true in `appsettings.Development.json`
+4. launch the CMS Dashboard locally (the InMemory fallback will auto-seed mock data)
 6. manually verify functionality before staging and committing changes
 
 Detailed local environment guidance belongs in:

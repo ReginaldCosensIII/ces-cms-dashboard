@@ -80,18 +80,21 @@ Do not store sensitive credentials in tracked repository files.
 
 If local-only configuration is needed, it should remain untracked and consistent with the repository `.gitignore` rules.
 
-## PostgreSQL setup expectations
+## Development Database and Fallback
 
-For the current phase, the project only needs a clean development-ready foundation.
+For the current phase, the primary database target is PostgreSQL (`ces_cms_db`).
 
-That includes:
+This includes:
 - PostgreSQL package integration
 - connection string usage pattern
 - DbContext setup
 - migration-ready configuration
 - baseline schema workflow
 
-The project does not yet require production database deployment steps in this phase.
+**InMemory Fallback for Local Development**
+Because the local laptop cannot currently connect directly to the Dev Server DB over VPN, the application uses an isolated, disposable EF Core InMemory fallback.
+- `UseInMemoryDb`: true allows the UI to run locally with seeded mock data.
+- To generate migrations natively for PostgreSQL, temporarily set `UseInMemoryDb`: false, run the `dotnet ef migrations add` command, but **do not run database update**.
 
 ## Running the app locally
 
