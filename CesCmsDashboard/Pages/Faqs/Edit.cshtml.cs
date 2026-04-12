@@ -41,9 +41,17 @@ namespace CesCmsDashboard.Pages.Faqs
                 return Page();
             }
 
-            Faq.UpdatedAt = DateTime.UtcNow;
-            
-            _context.Attach(Faq).State = EntityState.Modified;
+            var existingFaq = await _context.Faqs.FindAsync(Faq.Id);
+            if (existingFaq == null)
+            {
+                return NotFound();
+            }
+
+            existingFaq.Question = Faq.Question;
+            existingFaq.Answer = Faq.Answer;
+            existingFaq.DisplayOrder = Faq.DisplayOrder;
+            existingFaq.IsPublished = Faq.IsPublished;
+            existingFaq.UpdatedAt = DateTime.UtcNow;
 
             try
             {
