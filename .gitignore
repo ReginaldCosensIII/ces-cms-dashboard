@@ -1,0 +1,28 @@
+# Build output
+bin/
+obj/
+
+# Visual Studio / VS Code / IDE
+.vs/
+.vscode/
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local configuration / secrets
+appsettings.Development.json
+secrets.local.json
+
+# Local-only agent workflow files
+agent-skills/
+.local-agent/
+.local/
