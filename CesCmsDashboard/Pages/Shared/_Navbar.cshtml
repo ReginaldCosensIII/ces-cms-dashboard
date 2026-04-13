@@ -1,0 +1,29 @@
+<nav class="navbar navbar-expand-md bg-semantic-navbar border-bottom sticky-top" data-bs-theme="dark">
+    <div class="container-fluid">
+        <!-- Sidebar Toggle for Mobile -->
+        <button class="navbar-toggler me-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <a class="navbar-brand text-semantic-navbar fw-bold d-flex align-items-center" asp-area="" asp-page="/Index">
+            <i data-lucide="layers" class="me-2"></i>
+            CES CMS
+        </a>
+        
+        <!-- Right side actions -->
+        <div class="d-flex align-items-center">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-semantic-navbar text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i data-lucide="user-circle" class="me-2"></i>
+                    <strong class="d-none d-sm-inline">Admin Profile</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
+                    <li><a class="dropdown-item" href="#"><i data-lucide="settings" class="me-2 icon-sm"></i>Settings</a></li>
+                    <li><a class="dropdown-item" href="#"><i data-lucide="user" class="me-2 icon-sm"></i>Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="#"><i data-lucide="log-out" class="me-2 icon-sm"></i>Sign out</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>

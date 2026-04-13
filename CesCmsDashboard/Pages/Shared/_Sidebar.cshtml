@@ -1,0 +1,42 @@
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-semantic-sidebar ces-sidebar collapse">
+    <div class="position-sticky pt-4">
+        <ul class="nav flex-column gap-2 px-3">
+            <li class="nav-item">
+                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path == "/" || ViewContext.HttpContext.Request.Path == "/Index" ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Index">
+                    <i data-lucide="layout-dashboard" class="me-3"></i>
+                    Dashboard Home
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Faqs") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Faqs/Index">
+                    <i data-lucide="message-square-more" class="me-3"></i>
+                    FAQs Management
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Privacy") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Privacy">
+                    <i data-lucide="shield-check" class="me-3"></i>
+                    Privacy Policy
+                </a>
+            </li>
+        </ul>
+
+        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-4 mt-4 mb-2 text-muted text-uppercase small">
+            <span>System Settings</span>
+        </h6>
+        <ul class="nav flex-column gap-2 px-3 mb-2">
+            <li class="nav-item">
+                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center" href="#">
+                    <i data-lucide="users" class="me-3"></i>
+                    User Roles
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center" href="#">
+                    <i data-lucide="database" class="me-3"></i>
+                    Database Backups
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
