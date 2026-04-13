@@ -1,10 +1,69 @@
-﻿@page
+@page
 @model IndexModel
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Dashboard Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row g-4 mt-1">
+    <!-- Left Column: System Status -->
+    <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm">
+            <div class="card-header bg-semantic-sidebar border-bottom-0 pt-3 pb-2">
+                <h5 class="card-title text-semantic-sidebar fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i data-lucide="activity" class="text-primary"></i>
+                    System Status
+                </h5>
+            </div>
+            <div class="card-body bg-semantic-sidebar rounded-bottom">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item bg-transparent text-semantic-sidebar d-flex justify-content-between align-items-center px-0 border-light">
+                        Database Connection
+                        <span class="badge bg-success rounded-pill px-3 py-2">Active</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-semantic-sidebar d-flex justify-content-between align-items-center px-0 border-light">
+                        Total FAQs
+                        <span class="fw-bold fs-5">12</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-semantic-sidebar d-flex justify-content-between align-items-center px-0 border-light">
+                        Pending Reviews
+                        <span class="badge bg-warning text-dark rounded-pill px-3 py-2">3</span>
+                    </li>
+                    <li class="list-group-item bg-transparent text-semantic-sidebar d-flex justify-content-between align-items-center px-0 border-0">
+                        System Load
+                        <span class="fw-bold">Normal</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: CES SEO Copilot -->
+    <div class="col-lg-6">
+        <div class="card h-100 border-0 shadow-sm d-flex flex-column">
+            <div class="card-header bg-semantic-navbar pt-3 pb-2">
+                <h5 class="card-title text-white fw-bold mb-0 d-flex align-items-center gap-2">
+                    <i data-lucide="sparkles" class="text-warning"></i>
+                    CES SEO Copilot
+                </h5>
+            </div>
+            <div class="card-body bg-semantic-sidebar d-flex flex-column rounded-bottom pt-0">
+                <div class="flex-grow-1 p-3 mt-3 mb-3 border rounded-3 bg-white overflow-auto shadow-sm" style="min-height: 200px;">
+                    <div class="d-flex mb-3">
+                        <div class="bg-light rounded p-2 px-3 small border">
+                            <strong>System:</strong> Welcome to the SEO Copilot. How can I assist you with your content today?
+                        </div>
+                    </div>
+                </div>
+                <form class="mt-auto">
+                    <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Ask Copilot a question..." aria-label="Ask Copilot a question">
+                        <button class="btn btn-primary d-flex align-items-center gap-2 px-3" type="button">
+                            <i data-lucide="send" class="icon-sm"></i>
+                            <span class="d-none d-sm-inline">Send</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

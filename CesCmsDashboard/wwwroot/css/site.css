@@ -51,6 +51,20 @@ body {
     background-color: var(--bg-sidebar) !important;
 }
 
+/* Custom Text Sizes */
+.text-semantic-small {
+    font-size: 0.75rem !important;
+}
+
+.icon-sm {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.max-w-300 {
+    max-width: 300px;
+}
+
 .text-semantic-navbar {
     color: var(--text-navbar) !important;
 }
