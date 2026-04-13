@@ -14,11 +14,11 @@
     
     <partial name="_Navbar" />
 
-    <div class="container-fluid overflow-hidden">
-        <div class="row">
+    <div class="container-fluid overflow-hidden p-0">
+        <div class="d-flex flex-nowrap w-100">
             <partial name="_Sidebar" />
             
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <main class="flex-grow-1 px-md-4 py-4 overflow-auto" style="height: calc(100vh - 56px);">
                 @RenderBody()
             </main>
         </div>
@@ -28,6 +28,29 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const toggleBtn = document.getElementById('sidebarToggle');
+            const toggleWrapper = document.getElementById('sidebarToggleWrapper');
+            const toggleIcon = document.getElementById('sidebarToggleIcon');
+            const sidebar = document.getElementById('sidebarMenu');
+            if(toggleBtn && sidebar && toggleIcon && toggleWrapper) {
+                toggleBtn.addEventListener('click', () => {
+                    sidebar.classList.toggle('sidebar-collapsed');
+                    if (sidebar.classList.contains('sidebar-collapsed')) {
+                        toggleIcon.setAttribute('data-lucide', 'panel-left-open');
+                        toggleWrapper.classList.remove('justify-content-end');
+                        toggleWrapper.classList.add('justify-content-center');
+                    } else {
+                        toggleIcon.setAttribute('data-lucide', 'panel-left-close');
+                        toggleWrapper.classList.remove('justify-content-center');
+                        toggleWrapper.classList.add('justify-content-end');
+                    }
+                    lucide.createIcons();
+                });
+            }
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

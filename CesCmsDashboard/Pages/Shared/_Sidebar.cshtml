@@ -1,28 +1,35 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-semantic-sidebar ces-sidebar collapse border-end">
+<nav id="sidebarMenu" class="ces-sidebar d-md-block border-end position-relative">
     <div class="position-sticky pt-4">
+        <!-- Toggle Button -->
+        <div class="px-3 mb-4 d-flex justify-content-end" id="sidebarToggleWrapper">
+            <button id="sidebarToggle" class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
+                <i data-lucide="panel-left-close" id="sidebarToggleIcon" class="icon-sm"></i>
+            </button>
+        </div>
+
         <ul class="nav flex-column gap-2 px-3">
             <li class="nav-item">
                 <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path == "/" || ViewContext.HttpContext.Request.Path == "/Index" ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Index">
-                    <i data-lucide="layout-dashboard" class="me-3"></i>
-                    Dashboard Home
+                    <i data-lucide="layout-dashboard" class="me-3 flex-shrink-0"></i>
+                    <span class="sidebar-text text-truncate">Dashboard Home</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Faqs") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Faqs/Index">
-                    <i data-lucide="message-square-more" class="me-3"></i>
-                    FAQs Management
+                    <i data-lucide="message-square-more" class="me-3 flex-shrink-0"></i>
+                    <span class="sidebar-text text-truncate">FAQs Management</span>
                 </a>
             </li>
         </ul>
 
-        <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-4 mt-4 mb-2 text-muted text-uppercase small">
+        <h6 class="sidebar-heading px-4 mt-4 mb-2 text-muted text-uppercase small sidebar-text text-truncate">
             <span>System Settings</span>
         </h6>
         <ul class="nav flex-column gap-2 px-3 mb-2">
             <li class="nav-item">
                 <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Backups") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Backups/Index">
-                    <i data-lucide="database-backup" class="me-3"></i>
-                    Database Backups
+                    <i data-lucide="database-backup" class="me-3 flex-shrink-0"></i>
+                    <span class="sidebar-text text-truncate">Database Backups</span>
                 </a>
             </li>
         </ul>
