@@ -1,37 +1,73 @@
-<nav id="sidebarMenu" class="ces-sidebar d-md-block border-end position-relative">
-    <div class="position-sticky pt-4">
+@{
+    var currentPath = ViewContext.HttpContext.Request.Path;
+    bool isHome    = currentPath == "/" || currentPath == "/Index";
+    bool isFaqs    = currentPath.StartsWithSegments("/Faqs");
+    bool isBackups = currentPath.StartsWithSegments("/Backups");
+}
+
+<nav id="sidebarMenu" class="ces-sidebar d-none d-md-flex">
+
+    <!-- ── TOP SECTION (grows, holds primary navigation) ── -->
+    <div class="sidebar-top">
+
         <!-- Toggle Button -->
-        <div class="px-3 mb-4 d-flex justify-content-end" id="sidebarToggleWrapper">
-            <button id="sidebarToggle" class="btn btn-sm btn-light border rounded-circle shadow-sm" style="width:32px; height:32px; display:flex; align-items:center; justify-content:center;">
-                <i data-lucide="panel-left-close" id="sidebarToggleIcon" class="icon-sm"></i>
+        <div class="sidebar-toggle-wrap" id="sidebarToggleWrapper">
+            <button id="sidebarToggle" class="sidebar-toggle-btn" type="button" title="Toggle sidebar">
+                <i data-lucide="panel-left-close" id="sidebarToggleIcon"></i>
             </button>
         </div>
 
-        <ul class="nav flex-column gap-2 px-3">
-            <li class="nav-item">
-                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path == "/" || ViewContext.HttpContext.Request.Path == "/Index" ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Index">
-                    <i data-lucide="layout-dashboard" class="me-3 flex-shrink-0"></i>
-                    <span class="sidebar-text text-truncate">Dashboard Home</span>
+        <!-- Primary Navigation -->
+        <ul class="sidebar-nav" role="navigation" aria-label="Main navigation">
+
+            <li>
+                <a class="sidebar-nav-link @(isHome ? "active" : "")"
+                   asp-area="" asp-page="/Index" title="Dashboard Home">
+                    <span class="sidebar-icon">
+                        <i data-lucide="layout-dashboard"></i>
+                    </span>
+                    <span class="sidebar-text">Dashboard Home</span>
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Faqs") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Faqs/Index">
-                    <i data-lucide="message-square-more" class="me-3 flex-shrink-0"></i>
-                    <span class="sidebar-text text-truncate">FAQs Management</span>
+
+            <li>
+                <a class="sidebar-nav-link @(isFaqs ? "active" : "")"
+                   asp-area="" asp-page="/Faqs/Index" title="FAQs Management">
+                    <span class="sidebar-icon">
+                        <i data-lucide="message-square-more"></i>
+                    </span>
+                    <span class="sidebar-text">FAQs Management</span>
                 </a>
             </li>
+
         </ul>
 
-        <h6 class="sidebar-heading px-4 mt-4 mb-2 text-muted text-uppercase small sidebar-text text-truncate">
+    </div><!-- /sidebar-top -->
+
+    <!-- ── BOTTOM SECTION (pinned, never moves during collapse) ── -->
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-divider"></div>
+
+        <!-- "System Settings" label fades gracefully, never pushes items -->
+        <div class="sidebar-section-label">
             <span>System Settings</span>
-        </h6>
-        <ul class="nav flex-column gap-2 px-3 mb-2">
-            <li class="nav-item">
-                <a class="nav-link text-semantic-sidebar rounded-3 fw-medium d-flex align-items-center @(ViewContext.HttpContext.Request.Path.StartsWithSegments("/Backups") ? "bg-semantic-active-link" : "")" asp-area="" asp-page="/Backups/Index">
-                    <i data-lucide="database-backup" class="me-3 flex-shrink-0"></i>
-                    <span class="sidebar-text text-truncate">Database Backups</span>
+        </div>
+
+        <ul class="sidebar-nav" role="navigation" aria-label="System settings navigation">
+
+            <li>
+                <a class="sidebar-nav-link @(isBackups ? "active" : "")"
+                   asp-area="" asp-page="/Backups/Index" title="Database Backups">
+                    <span class="sidebar-icon">
+                        <i data-lucide="database-backup"></i>
+                    </span>
+                    <span class="sidebar-text">Database Backups</span>
                 </a>
             </li>
+
         </ul>
-    </div>
+
+    </div><!-- /sidebar-bottom -->
+
 </nav>

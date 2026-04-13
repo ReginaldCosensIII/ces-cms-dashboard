@@ -1,165 +1,635 @@
-:root {
-  /* CES Brand Variables */
-  --color-dark-slate: #2f4f4f;
-  --color-dark-slate-light: #4a7c7c;
-  --color-light-green: #85CCAA;
-  --color-maroon: #660033;
-  --color-bg-light: #f8f9fa;
-  --color-text: #212529;
-  --color-white: #ffffff;
+/* ============================================================
+   CES CMS Dashboard — site.css
+   Premium Enterprise Design System
+   ============================================================ */
 
-  /* Semantic Theme Variables */
-  --bg-body: #f4f6f8;
-  --bg-surface: var(--color-white);
-  --bg-sidebar: var(--bg-surface);
-  --bg-navbar: var(--color-dark-slate);
-  --text-navbar: var(--color-white);
-  --text-sidebar: var(--color-text);
-  
-  --bg-active-link: var(--color-light-green);
-  --text-active-link: var(--color-maroon);
-  
-  --font-family-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+:root {
+  /* CES Brand Palette */
+  --color-dark-slate:         #2f4f4f;
+  --color-dark-slate-light:   #4a7c7c;
+  --color-dark-slate-deep:    #1e3535;
+  --color-light-green:        #85CCAA;
+  --color-light-green-dim:    rgba(133, 204, 170, 0.18);
+  --color-maroon:             #660033;
+  --color-maroon-dim:         rgba(102, 0, 51, 0.12);
+  --color-white:              #ffffff;
+
+  /* Semantic Surfaces */
+  --bg-body:                  #eef1f5;
+  --bg-surface:               #ffffff;
+  --bg-navbar:                var(--color-dark-slate);
+  --bg-sidebar:               #f7f9fb;
+  --text-navbar:              var(--color-white);
+  --text-sidebar:             #374151;
+  --text-muted-sidebar:       #9ca3af;
+
+  /* Active Link */
+  --bg-active-link:           var(--color-light-green);
+  --text-active-link:         var(--color-maroon);
+
+  /* Shadows */
+  --shadow-card:              0 4px 20px rgba(47, 79, 79, 0.09), 0 1px 4px rgba(47, 79, 79, 0.06);
+  --shadow-card-hover:        0 8px 32px rgba(47, 79, 79, 0.16), 0 2px 8px rgba(47, 79, 79, 0.08);
+  --shadow-navbar:            0 2px 16px rgba(30, 53, 53, 0.35);
+  --shadow-sidebar-item:      0 2px 8px rgba(47, 79, 79, 0.12);
+
+  /* Sidebar Dimensions */
+  --sidebar-width:            256px;
+  --sidebar-collapsed-width:  68px;
+  --navbar-height:            60px;
+
+  /* Typography */
+  --font-family-base:         'Inter', 'Segoe UI', system-ui, sans-serif;
+  --font-size-base:           14px;
+  --letter-spacing-caps:      0.06em;
 }
 
+/* ============================================================
+   2. BASE
+   ============================================================ */
 html {
-  font-size: 14px;
+  font-size: var(--font-size-base);
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+  html { font-size: 15px; }
 }
 
 body {
   font-family: var(--font-family-base);
   background-color: var(--bg-body);
-  color: var(--color-text);
+  color: #212529;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Focus Overrides */
-.btn:focus, .btn:active:focus, .form-control:focus, .form-check-input:focus, .page-link:focus {
-  box-shadow: 0 0 0 0.2rem rgba(47, 79, 79, 0.25);
+/* ============================================================
+   3. FOCUS & FORM OVERRIDES
+   ============================================================ */
+.btn:focus,
+.btn:active:focus,
+.form-control:focus,
+.form-check-input:focus,
+.page-link:focus {
+  box-shadow: 0 0 0 3px rgba(47, 79, 79, 0.22);
+  outline: none;
 }
 
-/* Card overrides for floating contrast */
+.form-control {
+  border-color: #d1d5db;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.form-control:focus {
+  border-color: var(--color-dark-slate-light);
+}
+
+/* ============================================================
+   4. CARD SYSTEM — Floating Premium Cards
+   ============================================================ */
 .card {
-    background-color: var(--bg-surface) !important;
-    box-shadow: 0 4px 12px rgba(33, 37, 41, 0.05); /* Enterprise-grade subtle shadow without absolute black */
-    border: none;
+  background-color: var(--bg-surface) !important;
+  box-shadow: var(--shadow-card);
+  border: 1px solid rgba(47, 79, 79, 0.07) !important;
+  border-radius: 14px !important;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
 }
 
-/* Semantic Utility Classes */
-.bg-semantic-navbar {
-    background-color: var(--bg-navbar) !important;
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
 }
 
-.bg-semantic-sidebar {
-    background-color: var(--bg-sidebar) !important;
+.card-header {
+  border-radius: 14px 14px 0 0 !important;
+  border-bottom: 1px solid rgba(47, 79, 79, 0.08) !important;
 }
 
-.text-semantic-navbar {
-    color: var(--text-navbar) !important;
+/* ============================================================
+   5. NAVBAR — Dark Slate Premium
+   ============================================================ */
+.ces-navbar {
+  height: var(--navbar-height);
+  background: linear-gradient(135deg, var(--color-dark-slate-deep) 0%, var(--color-dark-slate) 100%);
+  box-shadow: var(--shadow-navbar);
+  border-bottom: 1px solid rgba(133, 204, 170, 0.15) !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 1040;
 }
 
-.text-semantic-sidebar {
-    color: var(--text-sidebar) !important;
+/* Thin accent stripe at the very bottom of the navbar */
+.ces-navbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--color-light-green), transparent);
+  opacity: 0.6;
 }
 
-/* Base Enterprise Animations */
-.btn, .nav-link, .table-hover tbody tr {
-    transition: all 0.2s ease-in-out;
+.ces-navbar .navbar-brand {
+  filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3));
+  transition: opacity 0.2s ease;
 }
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-.btn-sm:hover {
-    /* Mute translate for very small buttons */
-    transform: translateY(-1px);
-}
-.input-group .btn:hover { 
-    transform: none; 
-}
-
-.nav-link.text-semantic-sidebar {
-    transition: all 0.2s ease;
-}
-
-.nav-link.text-semantic-sidebar:hover {
-    color: var(--color-maroon) !important;
-    transform: scale(1.03); 
-    transform-origin: left center; 
-    font-weight: 500;
-}
-
-/* Dynamic Chevron */
-.dropdown-toggle::after { display: none !important; }
-.dropdown-toggle[aria-expanded="true"] .lucide-chevron-down { transform: rotate(180deg); transition: transform 0.3s ease-in-out; }
-.dropdown-toggle[aria-expanded="false"] .lucide-chevron-down { transform: rotate(0deg); transition: transform 0.3s ease-in-out; }
-
-.bg-semantic-active-link {
-    background-color: var(--bg-active-link) !important;
-    color: var(--text-active-link) !important;
-}
-.bg-semantic-active-link i {
-    color: var(--color-maroon) !important;
-}
-
-/* Custom Text Sizes & Layout Helpers */
-.text-semantic-small {
-    font-size: 0.75rem !important;
-}
-
-.icon-sm {
-    width: 16px !important;
-    height: 16px !important;
-}
-
-.max-w-300 {
-    max-width: 300px;
+.ces-navbar .navbar-brand:hover {
+  opacity: 0.85;
 }
 
 .navbar-logo {
-    max-height: 40px;
+  max-height: 36px;
 }
 
-/* Dashboard Specifics */
+.navbar-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.92);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
+}
+
+.navbar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 50px;
+  padding: 5px 14px 5px 8px;
+  color: rgba(255,255,255,0.92);
+  text-decoration: none;
+  font-size: 0.82rem;
+  font-weight: 500;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+.navbar-badge:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255,255,255,0.28);
+  color: var(--color-white);
+}
+.navbar-badge .navbar-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--color-light-green), var(--color-dark-slate-light));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.navbar-divider {
+  width: 1px;
+  height: 24px;
+  background: rgba(255,255,255,0.15);
+  margin: 0 12px;
+}
+
+/* Dropdown off navbar */
+.ces-navbar .dropdown-menu {
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(30, 53, 53, 0.22), 0 2px 8px rgba(30,53,53,0.1);
+  padding: 8px;
+  min-width: 200px;
+  margin-top: 8px !important;
+}
+.ces-navbar .dropdown-item {
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--text-sidebar);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.ces-navbar .dropdown-item:hover {
+  background: var(--color-light-green-dim);
+  color: var(--color-maroon);
+}
+.ces-navbar .dropdown-item .lucide {
+  opacity: 0.7;
+}
+
+/* ============================================================
+   6. SIDEBAR — Flexbox Architecture (Collapse-Safe)
+   ============================================================ */
 .ces-sidebar {
-    width: 250px;
-    transition: width 0.3s ease;
-    min-height: calc(100vh - 56px);
-    background: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-right: 1px solid rgba(255, 255, 255, 0.4);
+  width: var(--sidebar-width);
+  min-width: var(--sidebar-width);
+  height: calc(100vh - var(--navbar-height));
+  position: sticky;
+  top: var(--navbar-height);
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sidebar);
+  border-right: 1px solid rgba(47, 79, 79, 0.09);
+  overflow: hidden;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  z-index: 100;
 }
 
+/* Top section: toggle + primary nav (grows to fill) */
+.sidebar-top {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: 16px;
+}
+
+/* Bottom section: system settings (pinned at bottom, never moves) */
+.sidebar-bottom {
+  flex-shrink: 0;
+  padding-bottom: 16px;
+}
+
+/* ── Toggle Button ── */
+.sidebar-toggle-wrap {
+  display: flex;
+  justify-content: flex-end;
+  padding: 0 14px;
+  margin-bottom: 20px;
+  transition: justify-content 0.3s ease;
+}
+
+.sidebar-toggle-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid rgba(47, 79, 79, 0.15);
+  background: var(--bg-surface);
+  box-shadow: 0 2px 6px rgba(47, 79, 79, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  flex-shrink: 0;
+}
+.sidebar-toggle-btn:hover {
+  background: var(--color-light-green-dim);
+  box-shadow: var(--shadow-sidebar-item);
+  transform: scale(1.08);
+}
+.sidebar-toggle-btn .lucide {
+  width: 15px;
+  height: 15px;
+  color: var(--color-dark-slate);
+}
+
+/* ── Section Label (collapses gracefully) ── */
+.sidebar-section-label {
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  margin-bottom: 6px;
+  height: 20px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.sidebar-section-label span {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: var(--letter-spacing-caps);
+  text-transform: uppercase;
+  color: var(--text-muted-sidebar);
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+/* ── Nav Items ── */
+.sidebar-nav {
+  list-style: none;
+  padding: 0 10px;
+  margin: 0 0 8px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.sidebar-nav-link {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 9px 10px;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-sidebar);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
+  position: relative;
+}
+
+.sidebar-nav-link .sidebar-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: transparent;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+.sidebar-nav-link .sidebar-icon .lucide {
+  width: 17px;
+  height: 17px;
+  color: #6b7280;
+  transition: color 0.18s ease;
+}
+
+.sidebar-nav-link .sidebar-text {
+  margin-left: 10px;
+  opacity: 1;
+  transition: opacity 0.2s ease, width 0.2s ease;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.sidebar-nav-link:hover {
+  background: rgba(47, 79, 79, 0.06);
+  color: var(--color-dark-slate);
+  transform: translateX(2px);
+}
+.sidebar-nav-link:hover .sidebar-icon {
+  background: rgba(47, 79, 79, 0.08);
+}
+.sidebar-nav-link:hover .sidebar-icon .lucide {
+  color: var(--color-dark-slate);
+}
+
+/* Active state */
+.sidebar-nav-link.active {
+  background: var(--color-light-green-dim);
+  color: var(--color-maroon);
+}
+.sidebar-nav-link.active .sidebar-icon {
+  background: var(--color-light-green);
+}
+.sidebar-nav-link.active .sidebar-icon .lucide {
+  color: var(--color-maroon);
+}
+.sidebar-nav-link.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 60%;
+  border-radius: 0 3px 3px 0;
+  background: var(--color-maroon);
+}
+
+/* Divider between top and bottom sections */
+.sidebar-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(47,79,79,0.12), transparent);
+  margin: 10px 14px 12px;
+}
+
+/* ============================================================
+   7. COLLAPSED SIDEBAR — Perfectly Centered, No Jump
+   ============================================================ */
 .ces-sidebar.sidebar-collapsed {
-    width: 80px;
-    overflow-x: hidden;
+  width: var(--sidebar-collapsed-width);
+  min-width: var(--sidebar-collapsed-width);
 }
 
+/* Hide text spans */
 .ces-sidebar.sidebar-collapsed .sidebar-text {
-    opacity: 0;
-    visibility: hidden;
+  opacity: 0;
+  width: 0;
+  margin-left: 0;
 }
 
-.ces-sidebar.sidebar-collapsed .nav-link {
-    justify-content: center;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
+/* Hide section label text */
+.ces-sidebar.sidebar-collapsed .sidebar-section-label span {
+  opacity: 0;
 }
 
-.ces-sidebar.sidebar-collapsed .nav-link .lucide {
-    margin: 0 auto !important;
+/* Center the icon in collapsed nav items */
+.ces-sidebar.sidebar-collapsed .sidebar-nav-link {
+  justify-content: center;
+  padding: 0;
+  width: 44px;
+  height: 44px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  transform: none !important; /* no horizontal translate when collapsed */
 }
 
-.ces-sidebar.sidebar-collapsed .bg-semantic-active-link {
-    justify-content: center;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    width: 48px;
-    margin: 0 auto;
+/* Remove the left accent bar when collapsed (no room) */
+.ces-sidebar.sidebar-collapsed .sidebar-nav-link.active::before {
+  display: none;
+}
+
+/* Keep icon wrapper centered */
+.ces-sidebar.sidebar-collapsed .sidebar-nav-link .sidebar-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+}
+
+/* Toggle wraps to center */
+.ces-sidebar.sidebar-collapsed .sidebar-toggle-wrap {
+  justify-content: center;
+  padding: 0;
+}
+
+/* Section label area: collapse to zero height gracefully */
+.ces-sidebar.sidebar-collapsed .sidebar-section-label {
+  height: 0;
+  margin: 0;
+  padding: 0;
+}
+
+/* ============================================================
+   8. MAIN CONTENT AREA
+   ============================================================ */
+.main-content {
+  flex: 1;
+  min-width: 0;
+  height: calc(100vh - var(--navbar-height));
+  overflow-y: auto;
+  padding: 28px 32px;
+  background-color: var(--bg-body);
+}
+
+/* Page header zone */
+.page-header {
+  margin-bottom: 24px;
+}
+.page-header h1 {
+  font-size: 1.45rem;
+  font-weight: 700;
+  color: var(--color-dark-slate-deep);
+  margin-bottom: 2px;
+}
+.page-header .page-subtitle {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* ============================================================
+   9. STAT CARDS
+   ============================================================ */
+.stat-card {
+  border-radius: 14px !important;
+  border: 1px solid rgba(47, 79, 79, 0.07) !important;
+  box-shadow: var(--shadow-card);
+  background: var(--bg-surface) !important;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+}
+.stat-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+.stat-card-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.stat-card-icon.icon-green   { background: rgba(133, 204, 170, 0.2); }
+.stat-card-icon.icon-maroon  { background: rgba(102, 0, 51, 0.1); }
+.stat-card-icon.icon-slate   { background: rgba(47, 79, 79, 0.1); }
+.stat-card-icon.icon-amber   { background: rgba(245, 158, 11, 0.12); }
+.stat-card-icon .lucide      { width: 24px; height: 24px; }
+
+.stat-card-body .stat-value {
+  font-size: 1.7rem;
+  font-weight: 700;
+  color: var(--color-dark-slate-deep);
+  line-height: 1.1;
+}
+.stat-card-body .stat-label {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.stat-card-body .stat-sub {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+/* ============================================================
+   10. SEMANTIC UTILITIES
+   ============================================================ */
+.bg-semantic-navbar  { background-color: var(--bg-navbar) !important; }
+.bg-semantic-sidebar { background-color: var(--bg-sidebar) !important; }
+.text-semantic-navbar { color: var(--text-navbar) !important; }
+.text-semantic-sidebar { color: var(--text-sidebar) !important; }
+.bg-semantic-active-link {
+  background-color: var(--bg-active-link) !important;
+  color: var(--text-active-link) !important;
+}
+.bg-semantic-active-link i { color: var(--color-maroon) !important; }
+
+/* ============================================================
+   11. ICON SIZES
+   ============================================================ */
+.icon-sm   { width: 15px !important; height: 15px !important; }
+.icon-md   { width: 20px !important; height: 20px !important; }
+.icon-lg   { width: 24px !important; height: 24px !important; }
+
+/* ============================================================
+   12. BUTTONS
+   ============================================================ */
+.btn {
+  border-radius: 9px;
+  font-weight: 500;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.btn-sm:hover:not(:disabled) { transform: translateY(-1px); }
+.input-group .btn:hover       { transform: none; }
+
+.btn-primary {
+  background: var(--color-dark-slate);
+  border-color: var(--color-dark-slate);
+}
+.btn-primary:hover {
+  background: var(--color-dark-slate-deep);
+  border-color: var(--color-dark-slate-deep);
+}
+
+/* ============================================================
+   13. TABLE ENHANCEMENTS
+   ============================================================ */
+.table {
+  --bs-table-hover-bg: rgba(133, 204, 170, 0.08);
+}
+.table thead th {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  border-bottom-color: rgba(47, 79, 79, 0.1) !important;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+/* ============================================================
+   14. BADGES & STATUS
+   ============================================================ */
+.badge {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   15. MISC UTILITIES
+   ============================================================ */
+.max-w-300 { max-width: 300px; }
+
+/* Gradient separator line (inline-style replacement) */
+.gradient-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, rgba(47,79,79,0.12), transparent);
+  margin: 0;
+}
+
+/* Dropdown chevron animation */
+.dropdown-toggle::after { display: none !important; }
+.dropdown-toggle[aria-expanded="true"]  .lucide-chevron-down { transform: rotate(180deg); transition: transform 0.25s ease; }
+.dropdown-toggle[aria-expanded="false"] .lucide-chevron-down { transform: rotate(0deg);   transition: transform 0.25s ease; }
+
+/* Chat bubble */
+.chat-bubble {
+  background: linear-gradient(135deg, #f1f5f9, #e8edf5);
+  border: 1px solid rgba(47, 79, 79, 0.08);
+  border-radius: 0 12px 12px 12px;
+  padding: 10px 14px;
+  font-size: 0.875rem;
+  color: #374151;
+  max-width: 85%;
 }

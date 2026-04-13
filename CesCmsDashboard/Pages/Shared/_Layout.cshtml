@@ -3,25 +3,24 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CesCmsDashboard</title>
+    <meta name="description" content="CES CMS Dashboard — Content Management System for CES IT Services" />
+    <title>@ViewData["Title"] — CES CMS Dashboard</title>
     <link rel="icon" type="image/x-icon" href="~/favicon.ico" />
-    <script type="importmap"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CesCmsDashboard.styles.css" asp-append-version="true" />
 </head>
 <body>
-    
+
     <partial name="_Navbar" />
 
-    <div class="container-fluid overflow-hidden p-0">
-        <div class="d-flex flex-nowrap w-100">
-            <partial name="_Sidebar" />
-            
-            <main class="flex-grow-1 px-md-4 py-4 overflow-auto" style="height: calc(100vh - 56px);">
-                @RenderBody()
-            </main>
-        </div>
+    <div class="d-flex" style="overflow:hidden;">
+        <partial name="_Sidebar" />
+        <main class="main-content">
+            @RenderBody()
+        </main>
     </div>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -30,22 +29,17 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const toggleBtn = document.getElementById('sidebarToggle');
+            lucide.createIcons();
+
+            const toggleBtn     = document.getElementById('sidebarToggle');
             const toggleWrapper = document.getElementById('sidebarToggleWrapper');
-            const toggleIcon = document.getElementById('sidebarToggleIcon');
-            const sidebar = document.getElementById('sidebarMenu');
-            if(toggleBtn && sidebar && toggleIcon && toggleWrapper) {
+            const toggleIcon    = document.getElementById('sidebarToggleIcon');
+            const sidebar       = document.getElementById('sidebarMenu');
+
+            if (toggleBtn && sidebar && toggleIcon && toggleWrapper) {
                 toggleBtn.addEventListener('click', () => {
-                    sidebar.classList.toggle('sidebar-collapsed');
-                    if (sidebar.classList.contains('sidebar-collapsed')) {
-                        toggleIcon.setAttribute('data-lucide', 'panel-left-open');
-                        toggleWrapper.classList.remove('justify-content-end');
-                        toggleWrapper.classList.add('justify-content-center');
-                    } else {
-                        toggleIcon.setAttribute('data-lucide', 'panel-left-close');
-                        toggleWrapper.classList.remove('justify-content-center');
-                        toggleWrapper.classList.add('justify-content-end');
-                    }
+                    const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+                    toggleIcon.setAttribute('data-lucide', isCollapsed ? 'panel-left-open' : 'panel-left-close');
                     lucide.createIcons();
                 });
             }
