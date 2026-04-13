@@ -5,18 +5,18 @@
   --color-light-green: #85CCAA;
   --color-maroon: #660033;
   --color-bg-light: #f8f9fa;
-  --color-text: #333;
+  --color-text: #212529;
   --color-white: #ffffff;
 
   /* Semantic Theme Variables */
   --bg-body: #f4f6f8;
   --bg-surface: var(--color-white);
   --bg-sidebar: var(--bg-surface);
-  --bg-navbar: var(--bg-surface);
-  --text-navbar: var(--color-text);
+  --bg-navbar: var(--color-dark-slate);
+  --text-navbar: var(--color-white);
   --text-sidebar: var(--color-text);
   
-  --bg-active-link: rgba(102, 0, 51, 0.08);
+  --bg-active-link: var(--color-light-green);
   --text-active-link: var(--color-maroon);
   
   --font-family-base: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -46,7 +46,7 @@ body {
 /* Card overrides for floating contrast */
 .card {
     background-color: var(--bg-surface) !important;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05); /* Enterprise-grade subtle shadow */
+    box-shadow: 0 4px 12px rgba(33, 37, 41, 0.05); /* Enterprise-grade subtle shadow without absolute black */
     border: none;
 }
 
@@ -88,7 +88,6 @@ body {
 .bg-semantic-active-link {
     background-color: var(--bg-active-link) !important;
     color: var(--text-active-link) !important;
-    border-left: 4px solid var(--color-maroon);
 }
 .bg-semantic-active-link i {
     color: var(--color-maroon) !important;
@@ -115,5 +114,5 @@ body {
 /* Dashboard Specifics */
 .ces-sidebar {
     min-height: calc(100vh - 56px);
-    box-shadow: 1px 0 6px rgba(0, 0, 0, .05);
+    box-shadow: 1px 0 6px rgba(33, 37, 41, 0.05);
 }
