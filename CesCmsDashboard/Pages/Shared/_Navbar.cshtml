@@ -1,27 +1,30 @@
-<nav class="navbar navbar-expand-md bg-semantic-navbar border-bottom sticky-top" data-bs-theme="dark">
-    <div class="container-fluid">
+<nav class="navbar navbar-expand-md bg-semantic-navbar sticky-top border-bottom">
+    <div class="container-fluid position-relative d-flex align-items-center">
         <!-- Sidebar Toggle for Mobile -->
         <button class="navbar-toggler me-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         
-        <a class="navbar-brand text-semantic-navbar fw-bold d-flex align-items-center" asp-area="" asp-page="/Index">
-            <i data-lucide="layers" class="me-2"></i>
-            CES CMS
+        <!-- Left: Logo -->
+        <a class="navbar-brand d-flex align-items-center" asp-area="" asp-page="/Index">
+            <img src="~/media/branding-assets/ces-logo.png" alt="CES Logo" class="navbar-logo" />
         </a>
         
+        <!-- Center: Absolute Centered Title -->
+        <div class="position-absolute start-50 translate-middle-x fs-5 fw-bold text-semantic-navbar d-none d-md-block">
+            CMS Dashboard
+        </div>
+        
         <!-- Right side actions -->
-        <div class="d-flex align-items-center">
+        <div class="d-flex align-items-center ms-auto">
             <div class="dropdown">
                 <a href="#" class="d-flex align-items-center text-semantic-navbar text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
                     <i data-lucide="user-circle" class="me-2"></i>
-                    <strong class="d-none d-sm-inline">Admin Profile</strong>
+                    <strong class="d-none d-sm-inline">System User</strong>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
-                    <li><a class="dropdown-item" href="#"><i data-lucide="settings" class="me-2 icon-sm"></i>Settings</a></li>
-                    <li><a class="dropdown-item" href="#"><i data-lucide="user" class="me-2 icon-sm"></i>Profile</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="#"><i data-lucide="log-out" class="me-2 icon-sm"></i>Sign out</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#"><i data-lucide="activity" class="icon-sm"></i>System Status</a></li>
+                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#"><i data-lucide="help-circle" class="icon-sm"></i>Help & Documentation</a></li>
                 </ul>
             </div>
         </div>
