@@ -136,12 +136,16 @@ Before any commit:
 - confirm the scope stayed narrow
 - confirm docs were updated where needed
 
-### Step 6. Stage, commit, and push
-After verification:
 - stage the intended files
 - create clear commits
 - push the feature branch
 - avoid noisy or misleading commit messages
+
+### .NET & Entity Framework Execution Rules
+All `.NET CLI` and `Entity Framework` commands (including `dotnet run`, `dotnet build`, and `dotnet ef`) executed from the solution root MUST include the `--project CesCmsDashboard` flag to avoid resolution conflicts across multi-project solutions.
+
+### Database Seeding Constraint
+When seeding mock data using `HasData()` in `AppDbContext.cs`, you MUST use static, hardcoded, deterministic values (e.g., `new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc)`). Dynamic evaluations, such as `DateTime.UtcNow` or `Guid.NewGuid()`, are strictly prohibited inside `OnModelCreating` as they cause the Entity Framework model snapshot to drift on every build, triggering unnecessary pending change warnings.
 
 ### Step 7. Review the completion summary
 The implementation agent should return a structured summary describing:
@@ -205,6 +209,13 @@ Do not use AI to:
 - hide uncertainty
 - blur scope
 - generate unnecessary complexity
+
+## Local Environment Initialization
+
+Before starting development on a new machine or after significant dependency updates, you must initialize the local toolset:
+
+1. **Restore Local CLI Tools**: Run `dotnet tool restore` while in the `CesCmsDashboard` directory (or from the root with the appropriate path) to install local versions of `dotnet-ef`.
+2. **Verify Configuration**: Ensure your `appsettings.Development.json` is configured correctly for your local environment.
 
 ## Local-only agent files and skills
 

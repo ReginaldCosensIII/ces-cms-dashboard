@@ -23,8 +23,8 @@ public class AppDbContext : DbContext
                 Answer = "Mock Answer", 
                 DisplayOrder = 1, 
                 IsPublished = true,
-                CreatedAt = DateTime.UtcNow,
-                UpdatedAt = DateTime.UtcNow
+                CreatedAt = new DateTime(2026, 4, 20, 12, 0, 0, DateTimeKind.Utc),
+                UpdatedAt = new DateTime(2026, 4, 20, 12, 0, 0, DateTimeKind.Utc)
             }
         );
 
@@ -38,7 +38,7 @@ public class AppDbContext : DbContext
                 Slug = "how-to-securely-share-passwords",
                 Content = "<p>Use a secure password manager to share credentials.</p>",
                 IsPublished = false,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = new DateTime(2026, 4, 20, 12, 0, 0, DateTimeKind.Utc)
             }
         );
     }
