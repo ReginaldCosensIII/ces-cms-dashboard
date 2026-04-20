@@ -1,0 +1,73 @@
+@{
+    var currentPath = ViewContext.HttpContext.Request.Path;
+    bool isHome    = currentPath == "/" || currentPath == "/Index";
+    bool isFaqs    = currentPath.StartsWithSegments("/Faqs");
+    bool isBackups = currentPath.StartsWithSegments("/Backups");
+}
+
+<nav id="sidebarMenu" class="ces-sidebar d-none d-md-flex">
+
+    <!-- ── TOP SECTION (grows, holds primary navigation) ── -->
+    <div class="sidebar-top">
+
+        <!-- Toggle Button -->
+        <div class="sidebar-toggle-wrap" id="sidebarToggleWrapper">
+            <button id="sidebarToggle" class="sidebar-toggle-btn" type="button" title="Toggle sidebar">
+                <i data-lucide="panel-left-close" id="sidebarToggleIcon"></i>
+            </button>
+        </div>
+
+        <!-- Primary Navigation -->
+        <ul class="sidebar-nav" role="navigation" aria-label="Main navigation">
+
+            <li>
+                <a class="sidebar-nav-link @(isHome ? "active" : "")"
+                   asp-area="" asp-page="/Index" title="Dashboard Home">
+                    <span class="sidebar-icon">
+                        <i data-lucide="layout-dashboard"></i>
+                    </span>
+                    <span class="sidebar-text">Dashboard Home</span>
+                </a>
+            </li>
+
+            <li>
+                <a class="sidebar-nav-link @(isFaqs ? "active" : "")"
+                   asp-area="" asp-page="/Faqs/Index" title="FAQs Management">
+                    <span class="sidebar-icon">
+                        <i data-lucide="message-square-more"></i>
+                    </span>
+                    <span class="sidebar-text">FAQs Management</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div><!-- /sidebar-top -->
+
+    <!-- ── BOTTOM SECTION (pinned, never moves during collapse) ── -->
+    <div class="sidebar-bottom">
+
+        <div class="sidebar-divider"></div>
+
+        <!-- "System Settings" label fades gracefully, never pushes items -->
+        <div class="sidebar-section-label">
+            <span>System Settings</span>
+        </div>
+
+        <ul class="sidebar-nav" role="navigation" aria-label="System settings navigation">
+
+            <li>
+                <a class="sidebar-nav-link @(isBackups ? "active" : "")"
+                   asp-area="" asp-page="/Backups/Index" title="Database Backups">
+                    <span class="sidebar-icon">
+                        <i data-lucide="database-backup"></i>
+                    </span>
+                    <span class="sidebar-text">Database Backups</span>
+                </a>
+            </li>
+
+        </ul>
+
+    </div><!-- /sidebar-bottom -->
+
+</nav>
