@@ -3,50 +3,108 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    // ── Quill Editor Initialization ──────────────────────────────────────────
-    const editorContainer = document.getElementById('faq-editor-container');
+    if (typeof Quill !== 'undefined') {
+        const toolbarOptions = [
+            ['bold', 'italic', 'underline', 'strike'],
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link'],
+            ['clean']
+        ];
 
-    if (editorContainer && typeof Quill !== 'undefined') {
-
-        const quill = new Quill('#faq-editor-container', {
-            theme: 'snow',
-            placeholder: 'Provide the detailed answer...',
-            modules: {
-                toolbar: [
-                    // Allowed: Bold, Italic, Underline, Strike
-                    ['bold', 'italic', 'underline', 'strike'],
-                    // Allowed: Ordered list, Bullet list
-                    [{ list: 'ordered' }, { list: 'bullet' }],
-                    // Allowed: Link
-                    ['link'],
-                    // Clean formatting
-                    ['clean']
-                    // PROHIBITED: color, background, font, size, header, image
-                ]
-            }
-        });
-
-        // Sync Quill HTML content to the hidden input on every change
-        // so the form captures the rich text on submission.
-        const answerInput = document.getElementById('Answer');
-        if (answerInput) {
-            quill.on('text-change', () => {
-                answerInput.value = quill.root.innerHTML;
+        // ── Create Modal Quill Editor ──────────────────────────────────────────
+        const createContainer = document.getElementById('create-quill-editor');
+        if (createContainer) {
+            const quillCreate = new Quill('#create-quill-editor', {
+                theme: 'snow',
+                placeholder: 'Provide the detailed answer...',
+                modules: { toolbar: toolbarOptions }
             });
+
+            const createAnswerInput = document.getElementById('CreateAnswer');
+            if (createAnswerInput) {
+                quillCreate.on('text-change', () => {
+                    createAnswerInput.value = quillCreate.root.innerHTML;
+                });
+            }
+
+            const createFaqModal = document.getElementById('createFaqModal');
+            if (createFaqModal) {
+                createFaqModal.addEventListener('show.bs.modal', () => {
+                    quillCreate.setContents([]);
+                    if (createAnswerInput) createAnswerInput.value = '';
+                });
+                createFaqModal.addEventListener('shown.bs.modal', () => {
+                    quillCreate.focus();
+                });
+            }
         }
 
-        // Sync when the FAQ modal opens so existing data could be pre-loaded
-        const faqModal = document.getElementById('faqModal');
-        if (faqModal) {
-            faqModal.addEventListener('shown.bs.modal', () => {
-                quill.focus();
+        // ── Edit Modal Quill Editor ────────────────────────────────────────────
+        const editContainer = document.getElementById('edit-quill-editor');
+        if (editContainer) {
+            const quillEdit = new Quill('#edit-quill-editor', {
+                theme: 'snow',
+                placeholder: 'Provide the detailed answer...',
+                modules: { toolbar: toolbarOptions }
             });
-            // Reset editor when modal is dismissed
-            faqModal.addEventListener('hidden.bs.modal', () => {
-                quill.setContents([]);
-                if (answerInput) answerInput.value = '';
-            });
+
+            const editAnswerInput = document.getElementById('EditAnswer');
+            if (editAnswerInput) {
+                quillEdit.on('text-change', () => {
+                    editAnswerInput.value = quillEdit.root.innerHTML;
+                });
+            }
+
+            const editFaqModal = document.getElementById('editFaqModal');
+            if (editFaqModal) {
+                editFaqModal.addEventListener('show.bs.modal', (event) => {
+                    const button = event.relatedTarget;
+                    if (button) {
+                        const id = button.getAttribute('data-id');
+                        const question = button.getAttribute('data-question');
+                        const answer = button.getAttribute('data-answer');
+                        const displayOrder = button.getAttribute('data-displayorder');
+                        const isPublished = button.getAttribute('data-ispublished') === 'true';
+
+                        const form = editFaqModal.querySelector('form');
+                        if (form) {
+                            const idInput = form.querySelector('input[name="updatedFaq.Id"]');
+                            if (idInput) idInput.value = id;
+
+                            const questionInput = form.querySelector('input[name="updatedFaq.Question"]');
+                            if (questionInput) questionInput.value = question;
+
+                            const displayOrderInput = form.querySelector('input[name="updatedFaq.DisplayOrder"]');
+                            if (displayOrderInput) displayOrderInput.value = displayOrder;
+
+                            const isPublishedSwitch = form.querySelector('input[name="updatedFaq.IsPublished"]');
+                            if (isPublishedSwitch) isPublishedSwitch.checked = isPublished;
+                        }
+
+                        quillEdit.root.innerHTML = answer || '';
+                        if (editAnswerInput) editAnswerInput.value = answer || '';
+                    }
+                });
+                editFaqModal.addEventListener('shown.bs.modal', () => {
+                    quillEdit.focus();
+                });
+            }
         }
     }
 
+    // ── Delete Modal ID Population ─────────────────────────────────────────
+    const deleteFaqModal = document.getElementById('deleteFaqModal');
+    if (deleteFaqModal) {
+        deleteFaqModal.addEventListener('show.bs.modal', (event) => {
+            const button = event.relatedTarget;
+            if (button) {
+                const id = button.getAttribute('data-id');
+                const form = deleteFaqModal.querySelector('form');
+                if (form) {
+                    const idInput = form.querySelector('input[name="id"]');
+                    if (idInput) idInput.value = id;
+                }
+            }
+        });
+    }
 });

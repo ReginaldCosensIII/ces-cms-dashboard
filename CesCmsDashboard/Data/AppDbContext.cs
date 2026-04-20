@@ -10,6 +10,7 @@ public class AppDbContext : DbContext
     }
 
     public DbSet<Faq> Faqs { get; set; }
+    public DbSet<TechTip> TechTips { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,6 +25,20 @@ public class AppDbContext : DbContext
                 IsPublished = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow
+            }
+        );
+
+        modelBuilder.Entity<TechTip>().HasIndex(t => t.Slug).IsUnique();
+
+        modelBuilder.Entity<TechTip>().HasData(
+            new TechTip
+            {
+                Id = 1,
+                Title = "How to securely share passwords",
+                Slug = "how-to-securely-share-passwords",
+                Content = "<p>Use a secure password manager to share credentials.</p>",
+                IsPublished = false,
+                CreatedAt = DateTime.UtcNow
             }
         );
     }
