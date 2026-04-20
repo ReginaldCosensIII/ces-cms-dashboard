@@ -633,3 +633,123 @@ body {
   color: #374151;
   max-width: 85%;
 }
+
+/* ============================================================
+   16. RECENT ACTIVITY LIST
+   ============================================================ */
+.activity-card-title {
+  font-size: 0.95rem;
+  color: var(--color-dark-slate-deep);
+}
+
+.activity-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 11px 0;
+  border-bottom: 1px solid rgba(47, 79, 79, 0.07);
+  transition: background 0.18s ease;
+}
+.activity-item:last-child {
+  border-bottom: none;
+}
+.activity-item:hover {
+  background: rgba(47, 79, 79, 0.025);
+  border-radius: 8px;
+  padding-left: 6px;
+  padding-right: 6px;
+}
+
+/* Circular icon backgrounds */
+.activity-icon-wrap {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.activity-icon-wrap .lucide {
+  width: 14px !important;
+  height: 14px !important;
+}
+
+.activity-icon-edit    { background: rgba(47, 79, 79, 0.1);    color: var(--color-dark-slate); }
+.activity-icon-plus    { background: rgba(133, 204, 170, 0.25); color: #1a6644; }
+.activity-icon-save    { background: rgba(102, 0, 51, 0.1);     color: var(--color-maroon); }
+.activity-icon-archive { background: rgba(245, 158, 11, 0.12);  color: #b45309; }
+
+/* Stacked text */
+.activity-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.activity-action {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-dark-slate-deep);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.activity-time {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* ============================================================
+   17. QUILL EDITOR — Brand Integration
+   ============================================================ */
+.quill-editor-container {
+  height: 200px;
+  border-radius: 0 0 8px 8px;
+}
+
+/* Override Quill Snow theme to match our form aesthetic */
+.ql-container.ql-snow {
+  border-color: #d1d5db;
+  border-radius: 0 0 8px 8px;
+  font-family: var(--font-family-base);
+  font-size: 0.9rem;
+  color: #212529;
+}
+
+.ql-toolbar.ql-snow {
+  border-color: #d1d5db;
+  border-radius: 8px 8px 0 0;
+  background: #f8fafc;
+  padding: 6px 10px;
+}
+
+/* Brand-colored focus ring on editor */
+.ql-container.ql-snow:focus-within {
+  border-color: var(--color-dark-slate-light);
+  box-shadow: 0 0 0 3px rgba(47, 79, 79, 0.15);
+}
+.ql-container.ql-snow:focus-within + .ql-toolbar.ql-snow,
+.ql-toolbar.ql-snow:focus-within {
+  border-color: var(--color-dark-slate-light);
+}
+
+/* Style Quill toolbar buttons to use brand color on active/hover */
+.ql-toolbar.ql-snow .ql-formats button:hover,
+.ql-toolbar.ql-snow .ql-formats button.ql-active {
+  color: var(--color-dark-slate) !important;
+}
+.ql-toolbar.ql-snow .ql-formats button:hover .ql-stroke,
+.ql-toolbar.ql-snow .ql-formats button.ql-active .ql-stroke {
+  stroke: var(--color-dark-slate) !important;
+}
+.ql-toolbar.ql-snow .ql-formats button:hover .ql-fill,
+.ql-toolbar.ql-snow .ql-formats button.ql-active .ql-fill {
+  fill: var(--color-dark-slate) !important;
+}
