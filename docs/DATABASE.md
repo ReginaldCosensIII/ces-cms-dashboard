@@ -1,7 +1,7 @@
 # Database Schema & Entity Framework Strategy
 
 ## 1. Engine & ORM
-- **Database Engine:** PostgreSQL
+- **Database Engine:** PostgreSQL (Physical database instance required for Dev and Production environments)
 - **ORM:** Entity Framework Core (Code-First Migrations)
 - **State:** Migrations are stored in `Data/Migrations` and are applied sequentially.
 
@@ -43,4 +43,13 @@ Used to populate the Tech Tips section and dynamically inject `Article` or `HowT
 ## 4. Seeding Strategy
 During early UI development and isolated testing, mock data is injected via `AppDbContext.OnModelCreating` using the `HasData()` method. This ensures that frontend tables and modals can be visually verified before the physical PostgreSQL connection string is finalized.
 
-*Note: Seed data IDs are hardcoded (e.g., `Id = 1`) to prevent sequence conflicts during Entity Framework migrations.*
+*Note: Seed data IDs are hardcoded (e.g., `Id = 1`) to prevent sequence conflicts during Entity Framework migrations. As of Phase 4, all seed timestamps must use static UTC date values to prevent model snapshot drift.*
+
+## 5. EF Core Quick Reference
+Use these commands from the solution root to manage the database schema:
+
+| Action | Command |
+| :--- | :--- |
+| Add a Migration | `dotnet ef migrations add <Name> --project CesCmsDashboard -o Migrations` |
+| Update Database | `dotnet ef database update --project CesCmsDashboard` |
+| Remove Migration | `dotnet ef migrations remove --project CesCmsDashboard` |
