@@ -22,16 +22,7 @@
         <!-- Right: User actions -->
         <div class="d-flex align-items-center ms-auto gap-2">
 
-            <!-- Notification indicator (decorative) -->
-            <button class="btn p-0 border-0 position-relative d-none d-md-flex align-items-center justify-content-center"
-                    style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12)!important;"
-                    type="button" title="Notifications">
-                <i data-lucide="bell" class="icon-sm text-white"></i>
-                <span class="position-absolute top-0 end-0 badge rounded-circle"
-                      style="width:8px;height:8px;padding:0;background:var(--color-light-green);border:2px solid var(--color-dark-slate-deep);"></span>
-            </button>
 
-            <div class="navbar-divider d-none d-sm-block"></div>
 
             <!-- User dropdown -->
             <div class="dropdown">
@@ -40,26 +31,24 @@
                     <span class="navbar-avatar">
                         <i data-lucide="user" style="width:14px;height:14px;color:var(--color-dark-slate-deep);"></i>
                     </span>
-                    <span class="d-none d-sm-inline">System User</span>
+                    <span class="d-none d-sm-inline">Workspace</span>
                     <i data-lucide="chevron-down" class="icon-sm ms-1" style="color:rgba(255,255,255,0.6);"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="dropdownUser">
                     <li>
                         <div class="px-3 py-2 border-bottom mb-1" style="border-color:rgba(47,79,79,0.08)!important;">
-                            <div style="font-size:0.82rem;font-weight:600;color:var(--color-dark-slate-deep);">System User</div>
-                            <div style="font-size:0.72rem;color:#9ca3af;">Administrator</div>
+                            <div style="font-size:0.82rem;font-weight:600;color:var(--color-dark-slate-deep);">Workspace Controls</div>
                         </div>
                     </li>
                     <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                        <i data-lucide="activity" class="icon-sm"></i> System Status
+                        <i class="bi bi-eye"></i> Preview Engine
                     </a></li>
                     <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                        <i data-lucide="help-circle" class="icon-sm"></i> Help &amp; Documentation
+                        <i class="bi bi-gear"></i> Settings
                     </a></li>
                     <li><hr class="dropdown-divider my-1"></li>
-                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#"
-                           style="color:#dc3545;">
-                        <i data-lucide="log-out" class="icon-sm"></i> Sign Out
+                    <li><a class="dropdown-item d-flex align-items-center gap-2" href="#">
+                        <i class="bi bi-book"></i> Help &amp; Documentation
                     </a></li>
                 </ul>
             </div>
