@@ -170,38 +170,24 @@
 
 @section Scripts {
 <script>
-// ── Quill Tooltip Utility ────────────────────────────────────────────────────
-// Maps Quill toolbar button class names → human-readable tooltip labels
+// ── Quill Tooltip Map ────────────────────────────────────────────────────────
 const quillTooltips = {
     'ql-bold':        'Bold (Ctrl+B)',
     'ql-italic':      'Italic (Ctrl+I)',
     'ql-underline':   'Underline (Ctrl+U)',
     'ql-strike':      'Strikethrough',
-    'ql-blockquote':  'Blockquote',
-    'ql-code-block':  'Code Block',
-    'ql-header':      'Heading',
     'ql-list':        'List',
-    'ql-indent':      'Indent',
-    'ql-direction':   'Text Direction',
-    'ql-size':        'Font Size',
-    'ql-color':       'Font Color',
-    'ql-background':  'Highlight Color',
-    'ql-font':        'Font Family',
-    'ql-align':       'Text Alignment',
     'ql-link':        'Insert Link',
-    'ql-image':       'Insert Image',
-    'ql-video':       'Insert Video',
     'ql-clean':       'Remove Formatting',
 };
 
+// Search the parent element for .ql-toolbar (works regardless of Quill v2 insertion point)
 function applyQuillTooltips(editorContainerId) {
-    const toolbar = document.querySelector(`#${editorContainerId}`)
-                        ?.previousElementSibling;  // .ql-toolbar sits just before .ql-container
+    const container = document.getElementById(editorContainerId);
+    if (!container) return;
+    const toolbar = container.parentElement.querySelector('.ql-toolbar');
     if (!toolbar) return;
-
-    // Walk every button and picker-label in the toolbar
     toolbar.querySelectorAll('button, .ql-picker-label').forEach(el => {
-        // Find the matching tooltip by iterating quillTooltips keys
         for (const [cls, label] of Object.entries(quillTooltips)) {
             if (el.classList.contains(cls)) {
                 el.setAttribute('title', label);
@@ -212,85 +198,68 @@ function applyQuillTooltips(editorContainerId) {
     });
 }
 
-// ── Init: Create Modal Quill ─────────────────────────────────────────────────
+// Shared toolbar config
+const TOOLBAR_CONFIG = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link'],
+    ['clean']
+];
+
+// ── Create Modal ─────────────────────────────────────────────────────────────
 let createQuill = null;
 
 document.getElementById('createFaqModal').addEventListener('shown.bs.modal', function () {
-    if (createQuill) return; // only init once
+    if (createQuill) return; // guard: only init once per modal session
     createQuill = new Quill('#create-quill-editor', {
         theme: 'snow',
         placeholder: 'Write the FAQ answer here…',
-        modules: {
-            toolbar: [
-                [{ 'header': [1, 2, 3, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                ['link', 'blockquote', 'code-block'],
-                ['clean']
-            ]
-        }
+        modules: { toolbar: TOOLBAR_CONFIG }
     });
     applyQuillTooltips('create-quill-editor');
-
-    createQuill.on('text-change', function () {
+    createQuill.on('text-change', () => {
         document.getElementById('CreateAnswer').value = createQuill.root.innerHTML;
     });
 });
 
-// Reset content when modal closes
 document.getElementById('createFaqModal').addEventListener('hidden.bs.modal', function () {
-    if (createQuill) createQuill.setText('');
+    if (!createQuill) return;
+    createQuill.setText('');
     document.getElementById('CreateAnswer').value = '';
 });
 
-// ── Init: Edit Modal Quill ───────────────────────────────────────────────────
+// ── Edit Modal ───────────────────────────────────────────────────────────────
 let editQuill = null;
 
 document.getElementById('editFaqModal').addEventListener('show.bs.modal', function (event) {
     const btn = event.relatedTarget;
     if (!btn) return;
 
-    // Populate the hidden ID and question fields
-    const id       = btn.getAttribute('data-id');
-    const question = btn.getAttribute('data-question');
-    const answer   = btn.getAttribute('data-answer');
-    const order    = btn.getAttribute('data-displayorder');
-    const published = btn.getAttribute('data-ispublished');
-
     const form = this.querySelector('form');
-    form.querySelector('[name="updatedFaq.Id"]').value           = id;
-    form.querySelector('[name="updatedFaq.Question"]').value     = question;
-    form.querySelector('[name="updatedFaq.DisplayOrder"]').value = order;
-    form.querySelector('[name="updatedFaq.IsPublished"]').checked = (published === 'true');
+    form.querySelector('[name="updatedFaq.Id"]').value            = btn.getAttribute('data-id');
+    form.querySelector('[name="updatedFaq.Question"]').value      = btn.getAttribute('data-question');
+    form.querySelector('[name="updatedFaq.DisplayOrder"]').value  = btn.getAttribute('data-displayorder');
+    form.querySelector('[name="updatedFaq.IsPublished"]').checked = (btn.getAttribute('data-ispublished') === 'true');
 
-    // Init Quill once, then set content
+    const answer = btn.getAttribute('data-answer') || '';
+
     if (!editQuill) {
         editQuill = new Quill('#edit-quill-editor', {
             theme: 'snow',
             placeholder: 'Write the FAQ answer here…',
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, false] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    ['link', 'blockquote', 'code-block'],
-                    ['clean']
-                ]
-            }
+            modules: { toolbar: TOOLBAR_CONFIG }
         });
         applyQuillTooltips('edit-quill-editor');
-
-        editQuill.on('text-change', function () {
+        editQuill.on('text-change', () => {
             document.getElementById('EditAnswer').value = editQuill.root.innerHTML;
         });
     }
 
-    // Load existing answer HTML
-    editQuill.root.innerHTML = answer || '';
-    document.getElementById('EditAnswer').value = answer || '';
+    editQuill.root.innerHTML = answer;
+    document.getElementById('EditAnswer').value = answer;
 });
 
-// ── Delete Modal: wire up hidden ID field ────────────────────────────────────
+// ── Delete Modal ─────────────────────────────────────────────────────────────
 document.getElementById('deleteFaqModal').addEventListener('show.bs.modal', function (event) {
     const btn = event.relatedTarget;
     if (!btn) return;
