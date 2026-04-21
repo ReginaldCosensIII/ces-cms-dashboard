@@ -12,60 +12,69 @@
 
 <!-- Stat Cards Row -->
 <div class="row g-3 mb-4">
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card">
-            <div class="stat-card-icon icon-green">
-                <i data-lucide="database" class="icon-lg" style="color:var(--color-dark-slate);"></i>
-            </div>
-            <div class="stat-card-body">
-                <div class="stat-value">Active</div>
-                <div class="stat-label">Database</div>
-                <div class="stat-sub text-success fw-medium">Connected</div>
-            </div>
-        </div>
-    </div>
+
+    <!-- Total Content -->
     <div class="col-sm-6 col-xl-3">
         <div class="stat-card">
             <div class="stat-card-icon icon-slate">
-                <i data-lucide="message-square-more" class="icon-lg" style="color:var(--color-dark-slate);"></i>
+                <i data-lucide="files" class="icon-lg" style="color:var(--color-dark-slate);"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-value">12</div>
-                <div class="stat-label">Total FAQs</div>
-                <div class="stat-sub">Published entries</div>
+                <div class="stat-value">@Model.TotalAssets</div>
+                <div class="stat-label">Total Content</div>
+                <div class="stat-sub">FAQs &amp; Tech Tips</div>
             </div>
         </div>
     </div>
+
+    <!-- Published -->
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card">
+            <div class="stat-card-icon icon-green">
+                <i data-lucide="circle-check-big" class="icon-lg" style="color:#1a6644;"></i>
+            </div>
+            <div class="stat-card-body">
+                <div class="stat-value">@Model.PublishedAssets</div>
+                <div class="stat-label">Published</div>
+                <div class="stat-sub text-success fw-medium">Live on site</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Drafts -->
     <div class="col-sm-6 col-xl-3">
         <div class="stat-card">
             <div class="stat-card-icon icon-amber">
-                <i data-lucide="clock" class="icon-lg" style="color:#d97706;"></i>
+                <i data-lucide="file-pen-line" class="icon-lg" style="color:#d97706;"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Pending Reviews</div>
-                <div class="stat-sub" style="color:#d97706;">Awaiting action</div>
+                <div class="stat-value">@Model.DraftAssets</div>
+                <div class="stat-label">Drafts</div>
+                <div class="stat-sub" style="color:#d97706;">Awaiting publish</div>
             </div>
         </div>
     </div>
+
+    <!-- System Status (static) -->
     <div class="col-sm-6 col-xl-3">
         <div class="stat-card">
-            <div class="stat-card-icon icon-maroon">
-                <i data-lucide="cpu" class="icon-lg" style="color:var(--color-maroon);"></i>
+            <div class="stat-card-icon icon-green">
+                <i data-lucide="activity" class="icon-lg" style="color:#1a6644;"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-value">Normal</div>
-                <div class="stat-label">System Load</div>
-                <div class="stat-sub">All services healthy</div>
+                <div class="stat-value">Online</div>
+                <div class="stat-label">System Status</div>
+                <div class="stat-sub text-success fw-medium">All services healthy</div>
             </div>
         </div>
     </div>
+
 </div>
 
 <!-- Detail Cards Row -->
 <div class="row g-4">
 
-    <!-- Left: Recent Activity -->
+    <!-- Left: Recent Activity (Database-wired) -->
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2 px-4 py-3">
@@ -75,59 +84,44 @@
                 <h5 class="card-title fw-bold mb-0 activity-card-title">Recent Activity</h5>
             </div>
             <div class="card-body px-4 py-2">
-                <ul class="list-unstyled mb-0 activity-list">
 
-                    <li class="activity-item">
-                        <div class="activity-icon-wrap activity-icon-edit">
-                            <i data-lucide="edit-3" class="icon-sm"></i>
-                        </div>
-                        <div class="activity-text">
-                            <span class="activity-action">FAQ #12 Published</span>
-                            <span class="activity-time">2 hours ago</span>
-                        </div>
-                    </li>
+                @if (!Model.RecentActivity.Any())
+                {
+                    <div class="d-flex align-items-center justify-content-center py-5 text-muted">
+                        <i data-lucide="inbox" class="me-2 icon-md"></i>
+                        <span style="font-size:0.875rem;">No recent activity yet.</span>
+                    </div>
+                }
+                else
+                {
+                    <ul class="list-unstyled mb-0 activity-list">
+                        @foreach (var item in Model.RecentActivity)
+                        {
+                            <!-- Determine icon + color class by content type -->
+                            var iconName  = item.Type == "FAQ" ? "message-square-more" : "lightbulb";
+                            var iconClass = item.Type == "FAQ" ? "activity-icon-edit"  : "activity-icon-plus";
+                            var typeLabel = item.Type;
+                            var dateLabel = item.Date.ToString("MMM d, yyyy");
 
-                    <li class="activity-item">
-                        <div class="activity-icon-wrap activity-icon-plus">
-                            <i data-lucide="plus" class="icon-sm"></i>
-                        </div>
-                        <div class="activity-text">
-                            <span class="activity-action">New FAQ Created — "Cloud Backups"</span>
-                            <span class="activity-time">5 hours ago</span>
-                        </div>
-                    </li>
+                            <li class="activity-item">
+                                <div class="activity-icon-wrap @iconClass">
+                                    <i data-lucide="@iconName" class="icon-sm"></i>
+                                </div>
+                                <div class="activity-text">
+                                    <span class="activity-action" title="@item.Title">@item.Title</span>
+                                    <span class="activity-time">
+                                        <span class="badge rounded-pill px-2 py-1 me-1"
+                                              style="font-size:0.65rem;background:@(item.Type == "FAQ" ? "rgba(47,79,79,0.1)" : "rgba(133,204,170,0.25)");color:@(item.Type == "FAQ" ? "var(--color-dark-slate)" : "#1a6644");">
+                                            @typeLabel
+                                        </span>
+                                        @dateLabel
+                                    </span>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
 
-                    <li class="activity-item">
-                        <div class="activity-icon-wrap activity-icon-save">
-                            <i data-lucide="save" class="icon-sm"></i>
-                        </div>
-                        <div class="activity-text">
-                            <span class="activity-action">FAQ #9 Draft Saved</span>
-                            <span class="activity-time">Yesterday at 4:32 PM</span>
-                        </div>
-                    </li>
-
-                    <li class="activity-item">
-                        <div class="activity-icon-wrap activity-icon-edit">
-                            <i data-lucide="edit-3" class="icon-sm"></i>
-                        </div>
-                        <div class="activity-text">
-                            <span class="activity-action">FAQ #7 Updated — "Pricing"</span>
-                            <span class="activity-time">Yesterday at 11:10 AM</span>
-                        </div>
-                    </li>
-
-                    <li class="activity-item">
-                        <div class="activity-icon-wrap activity-icon-archive">
-                            <i data-lucide="archive" class="icon-sm"></i>
-                        </div>
-                        <div class="activity-text">
-                            <span class="activity-action">FAQ #3 Unpublished</span>
-                            <span class="activity-time">2 days ago</span>
-                        </div>
-                    </li>
-
-                </ul>
             </div>
         </div>
     </div>
