@@ -23,7 +23,13 @@
         })();
     </script>
 </head>
-<body>
+<body class="preload">
+    <script>
+        // Suppress initial load animations
+        window.addEventListener("load", function() { 
+            document.body.classList.remove("preload"); 
+        });
+    </script>
 
     <partial name="_Navbar" />
 

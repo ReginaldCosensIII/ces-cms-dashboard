@@ -9,6 +9,11 @@
 /* ============================================================
    1. DESIGN TOKENS
    ============================================================ */
+/* Suppress initial load animations */
+body.preload * {
+  transition: none !important;
+}
+
 :root {
   /* CES Brand Palette */
   --color-dark-slate:         #2f4f4f;
