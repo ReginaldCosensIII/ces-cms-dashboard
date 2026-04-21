@@ -69,6 +69,22 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Global Smooth Transitions ── */
+.ces-sidebar,
+.main-content {
+  transition: width 0.3s ease-in-out, min-width 0.3s ease-in-out, margin 0.3s ease-in-out;
+}
+.btn {
+  transition: transform 0.18s ease-in-out, box-shadow 0.18s ease-in-out, background 0.18s ease-in-out, color 0.18s ease-in-out;
+}
+
+/* ── Flash-prevention: apply collapsed width before DOM paint ── */
+.sidebar-pre-collapsed #sidebarMenu {
+  width: var(--sidebar-collapsed-width);
+  min-width: var(--sidebar-collapsed-width);
+  transition: none;
+}
+
 /* ============================================================
    3. FOCUS & FORM OVERRIDES
    ============================================================ */
@@ -237,13 +253,14 @@ body {
   z-index: 100;
 }
 
-/* Top section: toggle + primary nav (grows to fill) */
+/* Top section: primary nav (grows to fill) */
 .sidebar-top {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: 16px;
+  /* padding-top preserves nav item vertical position after removing toggle from flow */
+  padding-top: 58px;
 }
 
 /* Bottom section: system settings (pinned at bottom, never moves) */
@@ -252,37 +269,50 @@ body {
   padding-bottom: 16px;
 }
 
-/* ── Toggle Button ── */
-.sidebar-toggle-wrap {
-  display: flex;
-  justify-content: flex-end;
-  padding: 0 14px;
-  margin-bottom: 20px;
-  transition: justify-content 0.3s ease;
+/* ── Floating Toggle Button — absolutely positioned, centered on sidebar right border ── */
+.sidebar-toggle-float {
+  position: absolute;
+  /* left edge = sidebar-width - half button width (15px) → center lands on border */
+  left: calc(var(--sidebar-width) - 15px);
+  top: 20px;
+  z-index: 500;  /* above sidebar (100) and main content */
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* let clicks through the transparent wrapper div */
+}
+
+/* When sidebar collapses, shift float left to the new collapsed border */
+#sidebarMenu.sidebar-collapsed ~ .sidebar-toggle-float {
+  left: calc(var(--sidebar-collapsed-width) - 15px);
+}
+
+/* Hide on mobile (sidebar is hidden on small screens) */
+@media (max-width: 767px) {
+  .sidebar-toggle-float { display: none; }
 }
 
 .sidebar-toggle-btn {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  border: 1px solid rgba(47, 79, 79, 0.15);
+  border: 1px solid rgba(47, 79, 79, 0.18);
   background: var(--bg-surface);
-  box-shadow: 0 2px 6px rgba(47, 79, 79, 0.1);
+  box-shadow: 0 2px 8px rgba(47, 79, 79, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  pointer-events: all; /* re-enable clicks on the button itself */
+  transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
   flex-shrink: 0;
 }
 .sidebar-toggle-btn:hover {
-  background: var(--color-light-green-dim);
+  background: #e6f5ed;
   box-shadow: var(--shadow-sidebar-item);
-  transform: scale(1.08);
+  transform: scale(1.12);
 }
 .sidebar-toggle-btn .lucide {
-  width: 15px;
-  height: 15px;
+  width: 16px;
+  height: 16px;
   color: var(--color-dark-slate);
 }
 
@@ -372,24 +402,13 @@ body {
 /* Active state */
 .sidebar-nav-link.active {
   background: var(--color-light-green-dim);
-  color: var(--color-maroon);
+  color: var(--color-dark-slate-deep);
 }
 .sidebar-nav-link.active .sidebar-icon {
   background: var(--color-light-green);
 }
 .sidebar-nav-link.active .sidebar-icon .lucide {
-  color: var(--color-maroon);
-}
-.sidebar-nav-link.active::before {
-  content: '';
-  position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 60%;
-  border-radius: 0 3px 3px 0;
-  background: var(--color-maroon);
+  color: var(--color-dark-slate-deep);
 }
 
 /* Divider between top and bottom sections */
@@ -419,12 +438,12 @@ body {
   opacity: 0;
 }
 
-/* Center the icon in collapsed nav items */
+/* Center the icon in collapsed nav items — 54×54 box, 36px icon = 9px uniform padding on all sides */
 .ces-sidebar.sidebar-collapsed .sidebar-nav-link {
   justify-content: center;
   padding: 0;
-  width: 44px;
-  height: 44px;
+  width: 54px;
+  height: 54px;
   margin: 0 auto;
   border-radius: 12px;
   overflow: hidden;
@@ -443,11 +462,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Toggle wraps to center */
-.ces-sidebar.sidebar-collapsed .sidebar-toggle-wrap {
-  justify-content: center;
-  padding: 0;
-}
+/* Toggle float position handled by CSS sibling selector above — no sidebar-specific overrides needed */
 
 /* Section label area: collapse to zero height gracefully */
 .ces-sidebar.sidebar-collapsed .sidebar-section-label {
@@ -653,16 +668,16 @@ body {
   gap: 14px;
   padding: 11px 0;
   border-bottom: 1px solid rgba(47, 79, 79, 0.07);
-  transition: background 0.18s ease;
+  border-radius: 8px; /* apply base radius so it doesn't snap */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* sophisticated, smooth transition for background and padding */
 }
 .activity-item:last-child {
   border-bottom: none;
 }
 .activity-item:hover {
   background: rgba(47, 79, 79, 0.025);
-  border-radius: 8px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: 8px; /* slightly more pronounced, but smooth sliding indent */
+  padding-right: 8px;
 }
 
 /* Circular icon backgrounds */
