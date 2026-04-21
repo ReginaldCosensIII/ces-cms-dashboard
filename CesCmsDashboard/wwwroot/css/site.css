@@ -246,20 +246,21 @@ body {
   flex-direction: column;
   background: var(--bg-sidebar);
   border-right: 1px solid rgba(47, 79, 79, 0.09);
-  overflow: visible;
+  overflow: hidden;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
               min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   flex-shrink: 0;
   z-index: 100;
 }
 
-/* Top section: toggle + primary nav (grows to fill) */
+/* Top section: primary nav (grows to fill) */
 .sidebar-top {
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  padding-top: 16px;
+  /* padding-top preserves nav item vertical position after removing toggle from flow */
+  padding-top: 58px;
 }
 
 /* Bottom section: system settings (pinned at bottom, never moves) */
@@ -268,13 +269,25 @@ body {
   padding-bottom: 16px;
 }
 
-/* ── Toggle Button — anchored to right border of sidebar ── */
-.sidebar-toggle-wrap {
+/* ── Floating Toggle Button — absolutely positioned, centered on sidebar right border ── */
+.sidebar-toggle-float {
   position: absolute;
-  right: -15px;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 200;
+  /* left edge = sidebar-width - half button width (15px) → center lands on border */
+  left: calc(var(--sidebar-width) - 15px);
+  top: 20px;
+  z-index: 500;  /* above sidebar (100) and main content */
+  transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none; /* let clicks through the transparent wrapper div */
+}
+
+/* When sidebar collapses, shift float left to the new collapsed border */
+#sidebarMenu.sidebar-collapsed ~ .sidebar-toggle-float {
+  left: calc(var(--sidebar-collapsed-width) - 15px);
+}
+
+/* Hide on mobile (sidebar is hidden on small screens) */
+@media (max-width: 767px) {
+  .sidebar-toggle-float { display: none; }
 }
 
 .sidebar-toggle-btn {
@@ -288,17 +301,18 @@ body {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  pointer-events: all; /* re-enable clicks on the button itself */
   transition: background 0.2s ease-in-out, box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
   flex-shrink: 0;
 }
 .sidebar-toggle-btn:hover {
-  background: var(--color-light-green-dim);
+  background: #e6f5ed;
   box-shadow: var(--shadow-sidebar-item);
   transform: scale(1.12);
 }
 .sidebar-toggle-btn .lucide {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   color: var(--color-dark-slate);
 }
 
@@ -448,8 +462,7 @@ body {
   flex-shrink: 0;
 }
 
-/* Toggle stays on the right border even when collapsed — no extra CSS needed;
-   position: absolute; right: -15px already moves with the sidebar's width. */
+/* Toggle float position handled by CSS sibling selector above — no sidebar-specific overrides needed */
 
 /* Section label area: collapse to zero height gracefully */
 .ces-sidebar.sidebar-collapsed .sidebar-section-label {
