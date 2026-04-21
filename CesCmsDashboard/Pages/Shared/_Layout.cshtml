@@ -44,7 +44,7 @@
             </button>
         </div>
 
-        <main class="main-content">
+        <main id="mainContent" class="main-content">
             @RenderBody()
         </main>
     </div>
@@ -62,12 +62,20 @@
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons(); // renders all OTHER lucide icons on the page
 
-            const toggleBtn = document.getElementById('sidebarToggle');
-            const sidebar   = document.getElementById('sidebarMenu');
+            const toggleBtn   = document.getElementById('sidebarToggle');
+            const sidebar     = document.getElementById('sidebarMenu');
+            const mainContent = document.getElementById('mainContent');
 
-            // Restore persisted sidebar state
-            if (localStorage.getItem('sidebar-collapsed') === 'true' && sidebar) {
-                sidebar.classList.add('sidebar-collapsed');
+            // ── Restore persisted sidebar state ──
+            // We read from localStorage and ensure both elements and the document root are in sync
+            const isPersistedCollapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+            
+            if (isPersistedCollapsed) {
+                if (sidebar)     sidebar.classList.add('sidebar-collapsed');
+                if (mainContent) mainContent.classList.add('sidebar-collapsed');
+                document.documentElement.classList.add('sidebar-pre-collapsed');
+            } else {
+                document.documentElement.classList.remove('sidebar-pre-collapsed');
             }
 
             // Swap button icon based on collapsed state
@@ -75,12 +83,22 @@
                 if (!toggleBtn) return;
                 toggleBtn.innerHTML = isCollapsed ? SVG_OPEN : SVG_CLOSE;
             }
-            if (sidebar) syncIcon(sidebar.classList.contains('sidebar-collapsed'));
+            syncIcon(isPersistedCollapsed);
 
-            if (toggleBtn && sidebar) {
-                toggleBtn.addEventListener('click', () => {
+            if (toggleBtn && sidebar && mainContent) {
+                toggleBtn.addEventListener('click', (e) => {
+                    // Firmly handle event defaults if attached to an anchor (per task requirements)
+                    if (toggleBtn.tagName === 'A') e.preventDefault();
+
                     const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
+                    mainContent.classList.toggle('sidebar-collapsed', isCollapsed);
+                    
+                    // Firmly write to localStorage before any other UI logic
                     localStorage.setItem('sidebar-collapsed', isCollapsed);
+                    
+                    // Cleanup pre-paint class if it exists to allow standard transitions
+                    document.documentElement.classList.remove('sidebar-pre-collapsed');
+                    
                     syncIcon(isCollapsed);
                 });
             }

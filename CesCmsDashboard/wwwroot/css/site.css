@@ -421,7 +421,8 @@ body {
 /* ============================================================
    7. COLLAPSED SIDEBAR — Perfectly Centered, No Jump
    ============================================================ */
-.ces-sidebar.sidebar-collapsed {
+.ces-sidebar.sidebar-collapsed,
+html.sidebar-pre-collapsed .ces-sidebar {
   width: var(--sidebar-collapsed-width);
   min-width: var(--sidebar-collapsed-width);
 }
@@ -481,6 +482,17 @@ body {
   overflow-y: auto;
   padding: 28px 32px;
   background-color: var(--bg-body);
+  /* Synchronize transition with sidebar for a smooth layout shift */
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ensure margin sync if sidebar is collapsed (handles both JS toggle and pre-paint) */
+.ces-sidebar.sidebar-collapsed ~ .main-content,
+.main-content.sidebar-collapsed,
+html.sidebar-pre-collapsed .main-content {
+  /* If flex: 1 is used with a fixed-width sibling, no margin is technically needed, 
+     but we provide this rule to ensure sync in all layout modes and prevent overlaps */
+  margin-left: 0; 
 }
 
 /* Page header zone */
