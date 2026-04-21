@@ -668,16 +668,16 @@ body {
   gap: 14px;
   padding: 11px 0;
   border-bottom: 1px solid rgba(47, 79, 79, 0.07);
-  transition: background 0.18s ease;
+  border-radius: 8px; /* apply base radius so it doesn't snap */
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* sophisticated, smooth transition for background and padding */
 }
 .activity-item:last-child {
   border-bottom: none;
 }
 .activity-item:hover {
   background: rgba(47, 79, 79, 0.025);
-  border-radius: 8px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding-left: 8px; /* slightly more pronounced, but smooth sliding indent */
+  padding-right: 8px;
 }
 
 /* Circular icon backgrounds */
