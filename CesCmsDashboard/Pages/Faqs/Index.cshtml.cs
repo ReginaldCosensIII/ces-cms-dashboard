@@ -17,12 +17,18 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public IList<Faq> Faq { get;set; } = default!;
 
+        [BindProperty]
+        public Faq NewFaq { get; set; } = default!;
+
+        [BindProperty]
+        public Faq UpdatedFaq { get; set; } = default!;
+
         public async Task OnGetAsync()
         {
             Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
         }
 
-        public async Task<IActionResult> OnPostCreateAsync(Faq newFaq)
+        public async Task<IActionResult> OnPostCreateAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -30,24 +36,24 @@ namespace CesCmsDashboard.Pages.Faqs
                 return Page();
             }
 
-            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == newFaq.DisplayOrder);
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == NewFaq.DisplayOrder);
             if (displayOrderExists)
             {
-                ModelState.AddModelError("newFaq.DisplayOrder", "This display order number is already in use.");
+                ModelState.AddModelError("NewFaq.DisplayOrder", "This display order number is already in use.");
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
             }
 
-            newFaq.Id = Guid.NewGuid();
-            newFaq.CreatedAt = DateTime.UtcNow;
+            NewFaq.Id = Guid.NewGuid();
+            NewFaq.CreatedAt = DateTime.UtcNow;
             
-            _context.Faqs.Add(newFaq);
+            _context.Faqs.Add(NewFaq);
             await _context.SaveChangesAsync();
             
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(Faq updatedFaq)
+        public async Task<IActionResult> OnPostEditAsync()
         {
             if (!ModelState.IsValid)
             {
@@ -55,21 +61,21 @@ namespace CesCmsDashboard.Pages.Faqs
                 return Page();
             }
 
-            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == updatedFaq.DisplayOrder && f.Id != updatedFaq.Id);
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == UpdatedFaq.DisplayOrder && f.Id != UpdatedFaq.Id);
             if (displayOrderExists)
             {
-                ModelState.AddModelError("updatedFaq.DisplayOrder", "This display order number is already in use.");
+                ModelState.AddModelError("UpdatedFaq.DisplayOrder", "This display order number is already in use.");
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
             }
 
-            var faq = await _context.Faqs.FindAsync(updatedFaq.Id);
+            var faq = await _context.Faqs.FindAsync(UpdatedFaq.Id);
             if (faq != null)
             {
-                faq.Question = updatedFaq.Question;
-                faq.Answer = updatedFaq.Answer;
-                faq.IsPublished = updatedFaq.IsPublished;
-                faq.DisplayOrder = updatedFaq.DisplayOrder;
+                faq.Question = UpdatedFaq.Question;
+                faq.Answer = UpdatedFaq.Answer;
+                faq.IsPublished = UpdatedFaq.IsPublished;
+                faq.DisplayOrder = UpdatedFaq.DisplayOrder;
                 faq.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
