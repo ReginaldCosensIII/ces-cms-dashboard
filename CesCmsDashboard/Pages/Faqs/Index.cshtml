@@ -177,20 +177,20 @@
 <!-- Publish Warning Modal -->
 <div class="modal fade" id="publishWarningModal" tabindex="-1" aria-labelledby="publishWarningModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <div class="modal-header bg-warning border-bottom-0 text-dark">
+    <div class="modal-content">
+      <div class="modal-header">
         <h5 class="modal-title fw-bold" id="publishWarningModalLabel">Confirm Immediate Publication</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <div class="modal-body p-4 text-center">
-         <i data-lucide="alert-circle" class="text-warning mb-3" style="width: 48px; height: 48px;"></i>
-         <p class="fs-5 mb-1 text-semantic-sidebar">This content will be published to the live website immediately.</p>
+      <div class="modal-body text-center p-4">
+         <i data-lucide="alert-triangle" class="text-danger mb-3" style="width: 48px; height: 48px;"></i>
+         <p class="fs-5 mb-0">This content will be published to the live website immediately.</p>
       </div>
-      <div class="modal-footer border-top-0 pt-0 pb-4 px-4 bg-transparent d-flex justify-content-between">
-        <button type="button" class="btn btn-light border fw-medium" data-bs-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-secondary fw-medium">Preview (Coming Soon)</button>
-        <button type="button" id="confirmPublishBtn" class="btn btn-success d-flex align-items-center gap-2 fw-medium px-4">
-            <i data-lucide="check-circle" class="icon-sm text-white"></i> Publish Immediately
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary">Preview (Coming Soon)</button>
+        <button type="button" id="confirmPublishBtn" class="btn btn-danger d-flex align-items-center gap-2">
+            <i data-lucide="check-circle" class="icon-sm"></i> Publish Immediately
         </button>
       </div>
     </div>
@@ -301,11 +301,15 @@ let pendingForm = null;
 
 document.getElementById('createFaqForm').addEventListener('submit', function(e) {
     document.getElementById('CreateAnswer').value = createQuill.root.innerHTML;
-    const isPublished = document.getElementById('isPublishedSwitchCreate').checked;
-    // Check if valid using jQuery Validation if available
-    const isValid = typeof $(this).valid === 'function' ? $(this).valid() : true;
     
-    if (isPublished && isValid) {
+    var form = $(this);
+    if (typeof form.valid === 'function' && !form.valid()) {
+        e.preventDefault();
+        return false; // Stop! Let jQuery show the red error text.
+    }
+    
+    const isPublished = document.getElementById('isPublishedSwitchCreate').checked;
+    if (isPublished) {
         e.preventDefault();
         pendingForm = this;
         new bootstrap.Modal(document.getElementById('publishWarningModal')).show();
@@ -314,10 +318,15 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
 
 document.getElementById('editFaqForm').addEventListener('submit', function(e) {
     document.getElementById('EditAnswer').value = editQuill.root.innerHTML;
-    const isPublished = document.getElementById('isPublishedSwitchEdit').checked;
-    const isValid = typeof $(this).valid === 'function' ? $(this).valid() : true;
+    
+    var form = $(this);
+    if (typeof form.valid === 'function' && !form.valid()) {
+        e.preventDefault();
+        return false; // Stop! Let jQuery show the red error text.
+    }
 
-    if (isPublished && isValid) {
+    const isPublished = document.getElementById('isPublishedSwitchEdit').checked;
+    if (isPublished) {
         e.preventDefault();
         pendingForm = this;
         new bootstrap.Modal(document.getElementById('publishWarningModal')).show();
