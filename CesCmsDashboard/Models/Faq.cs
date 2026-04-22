@@ -14,6 +14,7 @@ public class Faq
     [Required(ErrorMessage = "An answer is required.")]
     public string Answer { get; set; } = string.Empty;
 
+    [Range(1, 10000, ErrorMessage = "Display Order must be between 1 and 10000.")]
     public int DisplayOrder { get; set; }
     public bool IsPublished { get; set; }
     public DateTime CreatedAt { get; set; }

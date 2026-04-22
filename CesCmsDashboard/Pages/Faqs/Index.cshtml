@@ -61,24 +61,24 @@
         <div class="modal-body p-4">
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
-              <input name="UpdatedFaq.Question" value="@faq.Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
-              <span asp-validation-for="UpdatedFaq.Question" class="text-danger"></span>
+              <input name="UpdatedFaq.Question" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Question : faq.Question)" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
+              @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.Question")</span> }
            </div>
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
-              <div id="editor-edit-@faq.Id" class="quill-editor-container" style="height: 200px;">@Html.Raw(faq.Answer)</div>
-              <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@faq.Answer" />
-              <span asp-validation-for="UpdatedFaq.Answer" class="text-danger"></span>
+              <div id="editor-edit-@faq.Id" class="quill-editor-container" style="height: 200px;">@Html.Raw(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)</div>
+              <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)" />
+              @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.Answer")</span> }
            </div>
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input name="UpdatedFaq.DisplayOrder" value="@faq.DisplayOrder" type="number" class="form-control" />
-                  <span asp-validation-for="UpdatedFaq.DisplayOrder" class="text-danger"></span>
+                  <input name="UpdatedFaq.DisplayOrder" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.DisplayOrder : faq.DisplayOrder)" type="number" min="1" class="form-control" />
+                  @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.DisplayOrder")</span> }
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">
                   <div class="form-check form-switch fs-5">
-                      <input class="form-check-input is-published-switch-edit" type="checkbox" role="switch" id="isPublishedSwitchEdit-@faq.Id" name="UpdatedFaq.IsPublished" value="true" @(faq.IsPublished ? "checked" : "")>
+                      <input class="form-check-input is-published-switch-edit" type="checkbox" role="switch" id="isPublishedSwitchEdit-@faq.Id" name="UpdatedFaq.IsPublished" value="true" checked="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.IsPublished : faq.IsPublished)">
                       <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchEdit-@faq.Id">Pubished to site</label>
                   </div>
               </div>
@@ -125,7 +125,7 @@
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input asp-for="NewFaq.DisplayOrder" class="form-control" />
+                  <input asp-for="NewFaq.DisplayOrder" class="form-control" value="@(Model.NewFaq?.DisplayOrder ?? 1)" min="1" />
                   <span asp-validation-for="NewFaq.DisplayOrder" class="text-danger"></span>
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">

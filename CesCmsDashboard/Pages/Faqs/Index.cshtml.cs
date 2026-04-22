@@ -26,6 +26,9 @@ namespace CesCmsDashboard.Pages.Faqs
         public async Task OnGetAsync()
         {
             Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+            
+            int nextOrder = await _context.Faqs.AnyAsync() ? await _context.Faqs.MaxAsync(f => f.DisplayOrder) + 1 : 1;
+            NewFaq = new Faq { DisplayOrder = nextOrder };
         }
 
         public async Task<IActionResult> OnPostCreateAsync()
