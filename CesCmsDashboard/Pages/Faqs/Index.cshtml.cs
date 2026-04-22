@@ -24,7 +24,19 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostCreateAsync(Faq newFaq)
         {
-            if (newFaq == null) return Page();
+            if (!ModelState.IsValid)
+            {
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == newFaq.DisplayOrder);
+            if (displayOrderExists)
+            {
+                ModelState.AddModelError("newFaq.DisplayOrder", "This display order number is already in use.");
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
 
             newFaq.Id = Guid.NewGuid();
             newFaq.CreatedAt = DateTime.UtcNow;
@@ -37,7 +49,19 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostEditAsync(Faq updatedFaq)
         {
-            if (updatedFaq == null) return Page();
+            if (!ModelState.IsValid)
+            {
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == updatedFaq.DisplayOrder && f.Id != updatedFaq.Id);
+            if (displayOrderExists)
+            {
+                ModelState.AddModelError("updatedFaq.DisplayOrder", "This display order number is already in use.");
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
 
             var faq = await _context.Faqs.FindAsync(updatedFaq.Id);
             if (faq != null)
