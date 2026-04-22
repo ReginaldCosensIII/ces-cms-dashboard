@@ -59,7 +59,7 @@ namespace CesCmsDashboard.Pages.Faqs
         {
             if (!ModelState.IsValid)
             {
-                ViewData["OpenModal"] = "editFaqModal";
+                ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
             }
@@ -67,7 +67,7 @@ namespace CesCmsDashboard.Pages.Faqs
             bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == UpdatedFaq.DisplayOrder && f.Id != UpdatedFaq.Id);
             if (displayOrderExists)
             {
-                ViewData["OpenModal"] = "editFaqModal";
+                ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
                 ModelState.AddModelError("UpdatedFaq.DisplayOrder", "This display order number is already in use.");
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
