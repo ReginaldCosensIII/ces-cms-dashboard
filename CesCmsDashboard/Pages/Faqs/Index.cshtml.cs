@@ -32,6 +32,7 @@ namespace CesCmsDashboard.Pages.Faqs
         {
             if (!ModelState.IsValid)
             {
+                ViewData["OpenModal"] = "createFaqModal";
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
             }
@@ -39,6 +40,7 @@ namespace CesCmsDashboard.Pages.Faqs
             bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == NewFaq.DisplayOrder);
             if (displayOrderExists)
             {
+                ViewData["OpenModal"] = "createFaqModal";
                 ModelState.AddModelError("NewFaq.DisplayOrder", "This display order number is already in use.");
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
@@ -57,6 +59,7 @@ namespace CesCmsDashboard.Pages.Faqs
         {
             if (!ModelState.IsValid)
             {
+                ViewData["OpenModal"] = "editFaqModal";
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();
             }
@@ -64,6 +67,7 @@ namespace CesCmsDashboard.Pages.Faqs
             bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == UpdatedFaq.DisplayOrder && f.Id != UpdatedFaq.Id);
             if (displayOrderExists)
             {
+                ViewData["OpenModal"] = "editFaqModal";
                 ModelState.AddModelError("UpdatedFaq.DisplayOrder", "This display order number is already in use.");
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
                 return Page();

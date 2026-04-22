@@ -67,24 +67,24 @@
         <div class="modal-body p-4">
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
-              <input type="text" name="newFaq.Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
+              <input asp-for="NewFaq.Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
               <span asp-validation-for="NewFaq.Question" class="text-danger"></span>
            </div>
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
               <div id="create-quill-editor" class="quill-editor-container" style="height: 200px;"></div>
-              <input type="hidden" id="CreateAnswer" name="newFaq.Answer" />
+              <input type="hidden" id="CreateAnswer" asp-for="NewFaq.Answer" />
               <span asp-validation-for="NewFaq.Answer" class="text-danger"></span>
            </div>
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input type="number" name="newFaq.DisplayOrder" class="form-control" value="0" />
+                  <input asp-for="NewFaq.DisplayOrder" class="form-control" />
                   <span asp-validation-for="NewFaq.DisplayOrder" class="text-danger"></span>
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">
                   <div class="form-check form-switch fs-5">
-                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchCreate" name="newFaq.IsPublished" value="true" checked>
+                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchCreate" asp-for="NewFaq.IsPublished">
                       <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchCreate">Pubished to site</label>
                   </div>
               </div>
@@ -114,24 +114,24 @@
         <div class="modal-body p-4">
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
-              <input type="text" name="updatedFaq.Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
+              <input asp-for="UpdatedFaq.Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
               <span asp-validation-for="UpdatedFaq.Question" class="text-danger"></span>
            </div>
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
               <div id="edit-quill-editor" class="quill-editor-container" style="height: 200px;"></div>
-              <input type="hidden" id="EditAnswer" name="updatedFaq.Answer" />
+              <input type="hidden" id="EditAnswer" asp-for="UpdatedFaq.Answer" />
               <span asp-validation-for="UpdatedFaq.Answer" class="text-danger"></span>
            </div>
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input type="number" name="updatedFaq.DisplayOrder" class="form-control" value="0" />
+                  <input asp-for="UpdatedFaq.DisplayOrder" class="form-control" />
                   <span asp-validation-for="UpdatedFaq.DisplayOrder" class="text-danger"></span>
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">
                   <div class="form-check form-switch fs-5">
-                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchEdit" name="updatedFaq.IsPublished" value="true">
+                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchEdit" asp-for="UpdatedFaq.IsPublished">
                       <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchEdit">Pubished to site</label>
                   </div>
               </div>
@@ -339,4 +339,14 @@ document.getElementById('confirmPublishBtn').addEventListener('click', function(
     }
 });
 </script>
+
+@if (ViewData["OpenModal"] != null)
+{
+    <script>
+        $(function() {
+            var myModal = new bootstrap.Modal(document.getElementById('@ViewData["OpenModal"]'));
+            myModal.show();
+        });
+    </script>
+}
 }
