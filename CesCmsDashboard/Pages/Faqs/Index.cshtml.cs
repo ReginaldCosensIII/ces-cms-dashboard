@@ -132,7 +132,7 @@ namespace CesCmsDashboard.Pages.Faqs
             // Ensure duplicate DisplayOrder checks are handled here if needed, adding to ModelState and returning Partial if failed.
             bool isDuplicate = await _context.Faqs.AnyAsync(f => f.DisplayOrder == faq.DisplayOrder && f.Id != faq.Id);
             if (isDuplicate) {
-                ModelState.AddModelError("Faq.DisplayOrder", "Display Order must be unique.");
+                ModelState.AddModelError("DisplayOrder", "This display order number is already in use.");
                 return Partial("_EditFaqPartial", faq);
             }
 
