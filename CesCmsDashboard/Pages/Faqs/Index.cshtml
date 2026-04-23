@@ -337,10 +337,44 @@ document.querySelectorAll('.editFaqForm').forEach(form => {
             }
         }
         
-        var jqForm = $(this);
-        if (typeof jqForm.valid === 'function' && !jqForm.valid()) {
+        let isClientValid = true;
+        
+        // 1. Validate Question
+        const questionInput = this.querySelector('[name="UpdatedFaq.Question"]');
+        const questionSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Question"]');
+        if (questionInput.value.trim() === '') {
+            questionSpan.textContent = "A question is required.";
+            isClientValid = false;
+        } else {
+            questionSpan.textContent = "";
+        }
+
+        // 2. Validate Answer
+        const answerInput = document.getElementById(answerInputId);
+        const answerSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Answer"]');
+        if (modal.quillInstance.getText().trim() === '') {
+            answerInput.value = '';
+            answerSpan.textContent = "An answer is required.";
+            isClientValid = false;
+        } else {
+            answerInput.value = modal.quillInstance.root.innerHTML;
+            answerSpan.textContent = "";
+        }
+
+        // 3. Validate Display Order
+        const displayOrderInput = this.querySelector('[name="UpdatedFaq.DisplayOrder"]');
+        const displayOrderSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.DisplayOrder"]');
+        if (!displayOrderInput.value || displayOrderInput.value < 1) {
+            displayOrderSpan.textContent = "Display Order must be 1 or greater.";
+            isClientValid = false;
+        } else {
+            displayOrderSpan.textContent = "";
+        }
+
+        // Halt form submission if client validation fails
+        if (!isClientValid) {
             e.preventDefault();
-            return false; // Stop! Let jQuery show the red error text.
+            return false;
         }
 
         const isPublished = document.getElementById('isPublishedSwitchEdit-' + faqId).checked;
