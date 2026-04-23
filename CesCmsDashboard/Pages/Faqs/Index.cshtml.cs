@@ -33,6 +33,11 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostCreateAsync()
         {
+            ModelState.Remove("UpdatedFaq.Question");
+            ModelState.Remove("UpdatedFaq.Answer");
+            ModelState.Remove("UpdatedFaq.DisplayOrder");
+            ModelState.Remove("UpdatedFaq.Id");
+
             if (!ModelState.IsValid)
             {
                 ViewData["OpenModal"] = "createFaqModal";
@@ -60,6 +65,10 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostEditAsync()
         {
+            ModelState.Remove("NewFaq.Question");
+            ModelState.Remove("NewFaq.Answer");
+            ModelState.Remove("NewFaq.DisplayOrder");
+
             if (!ModelState.IsValid)
             {
                 ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
