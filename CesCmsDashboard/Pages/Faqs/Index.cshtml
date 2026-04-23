@@ -348,7 +348,20 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
 
 document.getElementById('confirmPublishBtn').addEventListener('click', function() {
     if (pendingForm) {
-        pendingForm.submit();
+        // 1. Safely hide the warning modal to prevent aria-hidden UI freezes
+        const pubModal = bootstrap.Modal.getInstance(document.getElementById('publishWarningModal'));
+        if (pubModal) pubModal.hide();
+
+        // 2. Route the submission based on the architecture
+        if (pendingForm.id === 'editFaqForm') {
+            // AJAX Flow (Edit Modal)
+            pendingForm.dataset.bypass = "true"; 
+            const dummyEvent = { preventDefault: () => {} }; // Provide safe event object
+            window.submitEditAjax(dummyEvent, pendingForm);
+        } else {
+            // Native POST Flow (Create Modal)
+            pendingForm.submit();
+        }
     }
 });
 </script>
