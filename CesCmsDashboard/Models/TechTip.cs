@@ -7,15 +7,15 @@ namespace CesCmsDashboard.Models
     {
         public int Id { get; set; }
 
-        [Required]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "A title is required.")]
+        [MaxLength(250, ErrorMessage = "Title cannot exceed 250 characters.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required]
-        [MaxLength(255)]
+        [Required(ErrorMessage = "A slug is required.")]
+        [MaxLength(250, ErrorMessage = "Slug cannot exceed 250 characters.")]
         public string Slug { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Content is required.")]
         public string Content { get; set; } = string.Empty;
 
         public string? VideoUrl { get; set; }

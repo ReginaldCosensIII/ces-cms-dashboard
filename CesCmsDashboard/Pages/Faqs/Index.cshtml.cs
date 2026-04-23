@@ -17,35 +17,80 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public IList<Faq> Faq { get;set; } = default!;
 
+        [BindProperty]
+        public Faq NewFaq { get; set; } = default!;
+
+        [BindProperty]
+        public Faq UpdatedFaq { get; set; } = default!;
+
         public async Task OnGetAsync()
         {
             Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+            
+            int nextOrder = await _context.Faqs.AnyAsync() ? await _context.Faqs.MaxAsync(f => f.DisplayOrder) + 1 : 1;
+            NewFaq = new Faq { DisplayOrder = nextOrder };
         }
 
-        public async Task<IActionResult> OnPostCreateAsync(Faq newFaq)
+        public async Task<IActionResult> OnPostCreateAsync()
         {
-            if (newFaq == null) return Page();
+            // Clear the contaminated state that validated both forms
+            ModelState.Clear();
 
-            newFaq.Id = Guid.NewGuid();
-            newFaq.CreatedAt = DateTime.UtcNow;
+            // Explicitly validate ONLY the NewFaq object
+            if (!TryValidateModel(NewFaq, nameof(NewFaq)))
+            {
+                ViewData["OpenModal"] = "createFaqModal";
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == NewFaq.DisplayOrder);
+            if (displayOrderExists)
+            {
+                ViewData["OpenModal"] = "createFaqModal";
+                ModelState.AddModelError("NewFaq.DisplayOrder", "This display order number is already in use.");
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            NewFaq.Id = Guid.NewGuid();
+            NewFaq.CreatedAt = DateTime.UtcNow;
             
-            _context.Faqs.Add(newFaq);
+            _context.Faqs.Add(NewFaq);
             await _context.SaveChangesAsync();
             
             return RedirectToPage();
         }
 
-        public async Task<IActionResult> OnPostEditAsync(Faq updatedFaq)
+        public async Task<IActionResult> OnPostEditAsync()
         {
-            if (updatedFaq == null) return Page();
+            // Clear the contaminated state that validated both forms
+            ModelState.Clear();
 
-            var faq = await _context.Faqs.FindAsync(updatedFaq.Id);
+            // Explicitly validate ONLY the UpdatedFaq object
+            if (!TryValidateModel(UpdatedFaq, nameof(UpdatedFaq)))
+            {
+                ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            bool displayOrderExists = await _context.Faqs.AnyAsync(f => f.DisplayOrder == UpdatedFaq.DisplayOrder && f.Id != UpdatedFaq.Id);
+            if (displayOrderExists)
+            {
+                ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
+                ModelState.AddModelError("UpdatedFaq.DisplayOrder", "This display order number is already in use.");
+                Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
+                return Page();
+            }
+
+            var faq = await _context.Faqs.FindAsync(UpdatedFaq.Id);
             if (faq != null)
             {
-                faq.Question = updatedFaq.Question;
-                faq.Answer = updatedFaq.Answer;
-                faq.IsPublished = updatedFaq.IsPublished;
-                faq.DisplayOrder = updatedFaq.DisplayOrder;
+                faq.Question = UpdatedFaq.Question;
+                faq.Answer = UpdatedFaq.Answer;
+                faq.IsPublished = UpdatedFaq.IsPublished;
+                faq.DisplayOrder = UpdatedFaq.DisplayOrder;
                 faq.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
@@ -64,6 +109,41 @@ namespace CesCmsDashboard.Pages.Faqs
             }
 
             return RedirectToPage();
+        }
+        public async Task<IActionResult> OnGetEditModalPartialAsync(Guid id)
+        {
+            var faq = await _context.Faqs.FindAsync(id);
+            if (faq == null) return NotFound();
+            return Partial("_EditFaqPartial", faq);
+        }
+
+        public async Task<IActionResult> OnPostEditAjaxAsync(Faq faq)
+        {
+            ModelState.Clear();
+            if (!TryValidateModel(faq, nameof(Faq)))
+            {
+                // Return the partial with validation errors baked in
+                return Partial("_EditFaqPartial", faq); 
+            }
+
+            var existing = await _context.Faqs.FindAsync(faq.Id);
+            if (existing == null) return NotFound();
+
+            // Ensure duplicate DisplayOrder checks are handled here if needed, adding to ModelState and returning Partial if failed.
+            bool isDuplicate = await _context.Faqs.AnyAsync(f => f.DisplayOrder == faq.DisplayOrder && f.Id != faq.Id);
+            if (isDuplicate) {
+                ModelState.AddModelError("DisplayOrder", "This display order number is already in use.");
+                return Partial("_EditFaqPartial", faq);
+            }
+
+            existing.Question = faq.Question;
+            existing.Answer = faq.Answer;
+            existing.DisplayOrder = faq.DisplayOrder;
+            existing.IsPublished = faq.IsPublished;
+            existing.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return new JsonResult(new { success = true });
         }
     }
 }

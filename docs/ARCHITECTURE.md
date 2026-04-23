@@ -13,9 +13,13 @@ This approach ensures:
 ### A. The CMS Dashboard (This Repository)
 - **Role:** Secure internal portal for CES staff to author, edit, and publish content.
 - **Technology:** ASP.NET Core Razor Pages.
-- **UI Architecture:** - Standardized on Bootstrap 5. 
-  - Utilizes a custom CSS variable system (`site.css`) mapped to CES brand guidelines (e.g., `--color-dark-slate`, no pure absolute blacks).
-  - Employs Single Page Application (SPA) mechanics via Bootstrap Modals for non-destructive and destructive CRUD actions (e.g., Create, Delete) to prevent jarring page reloads and UI reflows.
+- **UI Architecture:** Standardized on Bootstrap 5. Utilizes a custom CSS variable system (`site.css`) mapped to CES brand guidelines (e.g., `--color-dark-slate`, no pure absolute blacks).
+  
+  #### Dynamic UI & Modal Architecture
+  When editing entities within a data table loop, the application must use the AJAX Partial View pattern rather than rendering hidden modals in a foreach loop. This prevents the jQuery Unobtrusive Validation "Duplicate DOM Name Trap", avoids Quill.js initialization race conditions, and ensures clean ModelState validation.
+  
+  Post handlers for multiple forms on a single page must use `ModelState.Clear()` followed by explicit `TryValidateModel(TargetObject)` to prevent cross-contamination of implicit required properties (like Guids).
+
 - **Rich Text Management:** Integrates `Quill.js`. The editor is strictly locked down via JavaScript initialization to prevent users from applying custom fonts, colors, or headings that violate brand standards. Allowed inputs are limited to bold, italic, underline, strike, lists, and links.
 
 ### B. The Data API Layer (This Repository)
