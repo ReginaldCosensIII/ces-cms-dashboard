@@ -268,6 +268,11 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
                 // 2. Initialize Quill
                 editQuillInstance = new Quill('#editor-edit', { theme: 'snow' });
                 
+                // Re-render icons for injected DOM
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+                
                 // 3. Open Modal
                 const modal = new bootstrap.Modal(document.getElementById('editFaqModal'));
                 modal.show();
@@ -328,6 +333,10 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
                     document.getElementById('editModalContainer').innerHTML = html;
                     $.validator.unobtrusive.parse('#editModalContainer form');
                     editQuillInstance = new Quill('#editor-edit', { theme: 'snow' });
+
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
 
                     // 4. Re-open the modal to show validation errors
                     const newModal = new bootstrap.Modal(document.getElementById('editFaqModal'));
