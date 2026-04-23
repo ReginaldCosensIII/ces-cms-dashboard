@@ -39,61 +39,12 @@
                             }
                         </td>
                         <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" data-bs-toggle="modal" data-bs-target="#editFaqModal-@faq.Id">
-                                <i data-lucide="edit-3" class="icon-sm"></i> Edit
-                            </button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="loadEditModal('@faq.Id')">Edit</button>
                             <button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 ms-1" data-bs-toggle="modal" data-bs-target="#deleteFaqModal" data-id="@faq.Id">
                                 <i data-lucide="trash-2" class="icon-sm"></i> Delete
                             </button>
                         </td>
                     </tr>
-
-<!-- Edit FAQ Modal -->
-<div class="modal fade editFaqModal" id="editFaqModal-@faq.Id" tabindex="-1" aria-labelledby="editFaqModalLabel-@faq.Id" aria-hidden="true" data-faq-id="@faq.Id">
-  <div class="modal-dialog modal-xl modal-dialog-centered">
-    <div class="modal-content border-0 shadow">
-      <form class="editFaqForm" method="post" asp-page-handler="Edit">
-        <input type="hidden" name="UpdatedFaq.Id" value="@faq.Id" />
-        <div class="modal-header bg-semantic-navbar border-bottom-0 text-white">
-          <h5 class="modal-title fw-bold text-white" id="editFaqModalLabel-@faq.Id">Edit FAQ</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body p-4">
-           <div class="mb-4">
-              <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
-              <input name="UpdatedFaq.Question" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Question : faq.Question)" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
-              <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Question" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Question") }</span>
-           </div>
-           <div class="mb-4">
-              <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
-              <div id="editor-edit-@faq.Id" class="quill-editor-container" style="height: 200px;">@Html.Raw(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)</div>
-              <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)" />
-              <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Answer" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Answer") }</span>
-           </div>
-           <div class="row g-4">
-              <div class="col-sm-6">
-                  <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input name="UpdatedFaq.DisplayOrder" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.DisplayOrder : faq.DisplayOrder)" type="number" min="1" class="form-control" />
-                  <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.DisplayOrder" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.DisplayOrder") }</span>
-              </div>
-              <div class="col-sm-6 d-flex align-items-end pb-1">
-                  <div class="form-check form-switch fs-5">
-                      <input class="form-check-input is-published-switch-edit" type="checkbox" role="switch" id="isPublishedSwitchEdit-@faq.Id" name="UpdatedFaq.IsPublished" value="true" checked="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.IsPublished : faq.IsPublished)">
-                      <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchEdit-@faq.Id">Pubished to site</label>
-                  </div>
-              </div>
-           </div>
-        </div>
-        <div class="modal-footer border-top-0 pt-0 pb-4 px-4 bg-transparent d-flex justify-content-between">
-          <button type="button" class="btn btn-light border fw-medium" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 fw-medium px-4">
-              <i data-lucide="save" class="icon-sm"></i> Save Changes
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
             }
                 </tbody>
             </table>
@@ -198,6 +149,8 @@
   </div>
 </div>
 
+<div id="editModalContainer"></div>
+
 @section Scripts {
 <partial name="_ValidationScriptsPartial" />
 <script>
@@ -267,30 +220,6 @@ document.getElementById('createFaqModal').addEventListener('hidden.bs.modal', fu
     document.getElementById('CreateAnswer').value = '';
 });
 
-// ── Edit Modals ──────────────────────────────────────────────────────────────
-document.querySelectorAll('.editFaqModal').forEach(modal => {
-    modal.addEventListener('shown.bs.modal', function () {
-        const faqId = this.getAttribute('data-faq-id');
-        const editorId = 'editor-edit-' + faqId;
-        const answerInputId = 'EditAnswer-' + faqId;
-        
-        if (!this.quillInstance) {
-            this.quillInstance = new Quill('#' + editorId, {
-                theme: 'snow',
-                placeholder: 'Write the FAQ answer here…',
-                modules: { toolbar: TOOLBAR_CONFIG }
-            });
-            applyQuillTooltips(editorId);
-            this.quillInstance.on('text-change', () => {
-                document.getElementById(answerInputId).value = this.quillInstance.root.innerHTML;
-            });
-        }
-
-        if (document.getElementById(answerInputId).value) {
-            this.quillInstance.root.innerHTML = document.getElementById(answerInputId).value;
-        }
-    });
-});
 
 // ── Delete Modal ─────────────────────────────────────────────────────────────
 document.getElementById('deleteFaqModal').addEventListener('show.bs.modal', function (event) {
@@ -323,68 +252,70 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
     }
 });
 
-document.querySelectorAll('.editFaqForm').forEach(form => {
-    form.addEventListener('submit', function(e) {
-        // 1. Immediately lock down the form to stop native/jQuery interference
+    let editQuillInstance = null;
+
+    window.loadEditModal = function(id) {
+        fetch(`?handler=EditModalPartial&id=${id}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('editModalContainer').innerHTML = html;
+                
+                // 1. Re-parse jQuery Validation for the injected HTML
+                $.validator.unobtrusive.parse('#editModalContainer form');
+                
+                // 2. Initialize Quill
+                editQuillInstance = new Quill('#editor-edit', { theme: 'snow' });
+                
+                // 3. Open Modal
+                const modal = new bootstrap.Modal(document.getElementById('editFaqModal'));
+                modal.show();
+            });
+    }
+
+    window.submitEditAjax = function(e, form) {
         e.preventDefault();
-
-        const modal = this.closest('.editFaqModal');
-        const faqId = modal.getAttribute('data-faq-id');
-        const answerInputId = 'EditAnswer-' + faqId;
-        let isClientValid = true;
-
-        // 2. Validate Question
-        const questionInput = this.querySelector('[name="UpdatedFaq.Question"]');
-        const questionSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Question"]');
-        if (questionInput.value.trim() === '') {
-            questionSpan.textContent = "A question is required.";
-            isClientValid = false;
+        
+        // Sync Quill to hidden input
+        if (editQuillInstance.getText().trim() === '') {
+            document.getElementById('EditAnswer').value = '';
         } else {
-            questionSpan.textContent = "";
+            document.getElementById('EditAnswer').value = editQuillInstance.root.innerHTML;
         }
 
-        // 3. Validate Answer (With Safe Quill Null Checks)
-        const answerInput = document.getElementById(answerInputId);
-        const answerSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Answer"]');
-        if (modal.quillInstance && modal.quillInstance.getText().trim() === '') {
-            answerInput.value = '';
-            answerSpan.textContent = "An answer is required.";
-            isClientValid = false;
-        } else if (modal.quillInstance) {
-            answerInput.value = modal.quillInstance.root.innerHTML;
-            answerSpan.textContent = "";
-        } else if (!answerInput.value) { // Fallback if Quill isn't loaded
-            answerSpan.textContent = "An answer is required.";
-            isClientValid = false;
-        }
+        // Run jQuery Validation explicitly
+        if (!$(form).valid()) return false;
 
-        // 4. Validate Display Order
-        const displayOrderInput = this.querySelector('[name="UpdatedFaq.DisplayOrder"]');
-        const displayOrderSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.DisplayOrder"]');
-        if (!displayOrderInput.value || parseInt(displayOrderInput.value) < 1) {
-            displayOrderSpan.textContent = "Display Order must be 1 or greater.";
-            isClientValid = false;
-        } else {
-            displayOrderSpan.textContent = "";
-        }
-
-        // Halt immediately if invalid
-        if (!isClientValid) {
-            return false; 
-        }
-
-        // 5. Safe Publish Warning Check
-        const isPublished = document.getElementById('isPublishedSwitchEdit-' + faqId).checked;
-        if (isPublished) {
-            pendingForm = this;
+        // Check Publish Warning
+        const isPublished = document.getElementById('isPublishedSwitchEdit').checked;
+        if (isPublished && !form.dataset.bypass) {
+            window.pendingForm = form;
             const pubModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('publishWarningModal'));
             pubModal.show();
-        } else {
-            // Valid & Not Published -> Force native submission bypass
-            this.submit();
+            return false;
         }
-    });
-});
+
+        // Execute AJAX POST
+        const formData = new FormData(form);
+        fetch('?handler=EditAjax', {
+            method: 'POST',
+            body: formData,
+            headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }
+        })
+        .then(response => {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                // Success - Reload page to show updated table
+                window.location.reload();
+            } else {
+                // Validation Failed - Replace HTML with new partial containing red text
+                response.text().then(html => {
+                    document.getElementById('editModalContainer').innerHTML = html;
+                    $.validator.unobtrusive.parse('#editModalContainer form');
+                    editQuillInstance = new Quill('#editor-edit', { theme: 'snow' });
+                });
+            }
+        });
+    }
 
 document.getElementById('confirmPublishBtn').addEventListener('click', function() {
     if (pendingForm) {

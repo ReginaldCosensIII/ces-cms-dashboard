@@ -1,0 +1,47 @@
+@model CesCmsDashboard.Models.Faq
+
+<div class="modal fade" id="editFaqModal" tabindex="-1" aria-labelledby="editFaqModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <form id="editFaqForm" onsubmit="submitEditAjax(event, this)">
+        <input type="hidden" asp-for="Id" />
+        <div class="modal-header bg-semantic-navbar border-bottom-0 text-white">
+          <h5 class="modal-title fw-bold text-white" id="editFaqModalLabel">Edit FAQ</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+           <div class="mb-4">
+              <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
+              <input asp-for="Question" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
+              <span asp-validation-for="Question" class="text-danger"></span>
+           </div>
+           <div class="mb-4">
+              <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
+              <div id="editor-edit" class="quill-editor-container" style="height: 200px;">@Html.Raw(Model.Answer)</div>
+              <input type="hidden" asp-for="Answer" id="EditAnswer" />
+              <span asp-validation-for="Answer" class="text-danger"></span>
+           </div>
+           <div class="row g-4">
+              <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
+                  <input asp-for="DisplayOrder" type="number" min="1" class="form-control" />
+                  <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+              </div>
+              <div class="col-sm-6 d-flex align-items-end pb-1">
+                  <div class="form-check form-switch fs-5">
+                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchEdit" asp-for="IsPublished">
+                      <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchEdit">Pubished to site</label>
+                  </div>
+              </div>
+           </div>
+        </div>
+        <div class="modal-footer border-top-0 pt-0 pb-4 px-4 bg-transparent d-flex justify-content-between">
+          <button type="button" class="btn btn-light border fw-medium" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 fw-medium px-4">
+              <i data-lucide="save" class="icon-sm"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

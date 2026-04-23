@@ -110,5 +110,40 @@ namespace CesCmsDashboard.Pages.Faqs
 
             return RedirectToPage();
         }
+        public async Task<IActionResult> OnGetEditModalPartialAsync(Guid id)
+        {
+            var faq = await _context.Faqs.FindAsync(id);
+            if (faq == null) return NotFound();
+            return Partial("_EditFaqPartial", faq);
+        }
+
+        public async Task<IActionResult> OnPostEditAjaxAsync(Faq faq)
+        {
+            ModelState.Clear();
+            if (!TryValidateModel(faq, nameof(Faq)))
+            {
+                // Return the partial with validation errors baked in
+                return Partial("_EditFaqPartial", faq); 
+            }
+
+            var existing = await _context.Faqs.FindAsync(faq.Id);
+            if (existing == null) return NotFound();
+
+            // Ensure duplicate DisplayOrder checks are handled here if needed, adding to ModelState and returning Partial if failed.
+            bool isDuplicate = await _context.Faqs.AnyAsync(f => f.DisplayOrder == faq.DisplayOrder && f.Id != faq.Id);
+            if (isDuplicate) {
+                ModelState.AddModelError("Faq.DisplayOrder", "Display Order must be unique.");
+                return Partial("_EditFaqPartial", faq);
+            }
+
+            existing.Question = faq.Question;
+            existing.Answer = faq.Answer;
+            existing.DisplayOrder = faq.DisplayOrder;
+            existing.IsPublished = faq.IsPublished;
+            existing.UpdatedAt = DateTime.UtcNow;
+
+            await _context.SaveChangesAsync();
+            return new JsonResult(new { success = true });
+        }
     }
 }
