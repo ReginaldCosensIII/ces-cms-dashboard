@@ -39,7 +39,9 @@
                             }
                         </td>
                         <td class="text-end pe-4">
-                            <button type="button" class="btn btn-primary btn-sm" onclick="loadEditModal('@faq.Id')">Edit</button>
+                            <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" onclick="loadEditModal('@faq.Id')">
+                                <i data-lucide="edit-3" class="icon-sm"></i> Edit
+                            </button>
                             <button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 ms-1" data-bs-toggle="modal" data-bs-target="#deleteFaqModal" data-id="@faq.Id">
                                 <i data-lucide="trash-2" class="icon-sm"></i> Delete
                             </button>
@@ -127,7 +129,7 @@
 </div>
 
 <!-- Publish Warning Modal -->
-<div class="modal fade" id="publishWarningModal" tabindex="-1" aria-labelledby="publishWarningModalLabel" aria-hidden="true">
+<div class="modal fade" id="publishWarningModal" tabindex="-1" aria-labelledby="publishWarningModalLabel" aria-hidden="true" style="z-index: 1060;">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -307,11 +309,29 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
                 // Success - Reload page to show updated table
                 window.location.reload();
             } else {
-                // Validation Failed - Replace HTML with new partial containing red text
+                // Validation Failed - Clean DOM, then replace HTML
                 response.text().then(html => {
+                    // 1. Clean up Bootstrap modal state
+                    const oldModalEl = document.getElementById('editFaqModal');
+                    if (oldModalEl) {
+                        const oldModal = bootstrap.Modal.getInstance(oldModalEl);
+                        if (oldModal) oldModal.dispose();
+                    }
+                    
+                    // 2. Wipe orphaned backdrops and body locks
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+
+                    // 3. Inject new HTML
                     document.getElementById('editModalContainer').innerHTML = html;
                     $.validator.unobtrusive.parse('#editModalContainer form');
                     editQuillInstance = new Quill('#editor-edit', { theme: 'snow' });
+
+                    // 4. Re-open the modal to show validation errors
+                    const newModal = new bootstrap.Modal(document.getElementById('editFaqModal'));
+                    newModal.show();
                 });
             }
         });
