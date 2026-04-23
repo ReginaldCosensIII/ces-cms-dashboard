@@ -201,6 +201,9 @@
 @section Scripts {
 <partial name="_ValidationScriptsPartial" />
 <script>
+    $.validator.setDefaults({ ignore: "" });
+</script>
+<script>
 // ── Quill Tooltip Map ────────────────────────────────────────────────────────
 const quillTooltips = {
     'ql-bold':        'Bold (Ctrl+B)',
@@ -300,7 +303,11 @@ document.getElementById('deleteFaqModal').addEventListener('show.bs.modal', func
 let pendingForm = null;
 
 document.getElementById('createFaqForm').addEventListener('submit', function(e) {
-    document.getElementById('CreateAnswer').value = createQuill.root.innerHTML;
+    if (createQuill.getText().trim() === '') {
+        document.getElementById('CreateAnswer').value = '';
+    } else {
+        document.getElementById('CreateAnswer').value = createQuill.root.innerHTML;
+    }
     
     var form = $(this);
     if (typeof form.valid === 'function' && !form.valid()) {
@@ -323,7 +330,11 @@ document.querySelectorAll('.editFaqForm').forEach(form => {
         const answerInputId = 'EditAnswer-' + faqId;
         
         if (modal.quillInstance) {
-            document.getElementById(answerInputId).value = modal.quillInstance.root.innerHTML;
+            if (modal.quillInstance.getText().trim() === '') {
+                document.getElementById(answerInputId).value = '';
+            } else {
+                document.getElementById(answerInputId).value = modal.quillInstance.root.innerHTML;
+            }
         }
         
         var jqForm = $(this);
