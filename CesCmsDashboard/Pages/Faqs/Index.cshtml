@@ -347,20 +347,23 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
     }
 
 document.getElementById('confirmPublishBtn').addEventListener('click', function() {
-    if (pendingForm) {
-        // 1. Safely hide the warning modal to prevent aria-hidden UI freezes
+    // Force JavaScript to check the global window object to bypass local scope traps
+    const targetForm = window.pendingForm || pendingForm;
+    
+    if (targetForm) {
+        // 1. Safely hide the warning modal to prevent aria-hidden focus traps
         const pubModal = bootstrap.Modal.getInstance(document.getElementById('publishWarningModal'));
         if (pubModal) pubModal.hide();
 
-        // 2. Route the submission based on the architecture
-        if (pendingForm.id === 'editFaqForm') {
+        // 2. Route the submission based on form architecture
+        if (targetForm.id === 'editFaqForm') {
             // AJAX Flow (Edit Modal)
-            pendingForm.dataset.bypass = "true"; 
-            const dummyEvent = { preventDefault: () => {} }; // Provide safe event object
-            window.submitEditAjax(dummyEvent, pendingForm);
+            targetForm.dataset.bypass = "true"; 
+            const synthEvent = new Event('submit', { bubbles: true, cancelable: true });
+            window.submitEditAjax(synthEvent, targetForm);
         } else {
             // Native POST Flow (Create Modal)
-            pendingForm.submit();
+            targetForm.submit();
         }
     }
 });
