@@ -61,19 +61,19 @@
         <div class="modal-body p-4">
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
-              <input name="UpdatedFaq.Question" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Question : faq.Question)" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." data-val="true" data-val-required="A question is required." data-val-maxlength="Question cannot exceed 250 characters." data-val-maxlength-max="250" />
+              <input name="UpdatedFaq.Question" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Question : faq.Question)" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." />
               <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Question" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Question") }</span>
            </div>
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
               <div id="editor-edit-@faq.Id" class="quill-editor-container" style="height: 200px;">@Html.Raw(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)</div>
-              <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)" data-val="true" data-val-required="An answer is required." />
+              <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)" />
               <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Answer" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Answer") }</span>
            </div>
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
-                  <input name="UpdatedFaq.DisplayOrder" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.DisplayOrder : faq.DisplayOrder)" type="number" min="1" class="form-control" data-val="true" data-val-required="The Display Order field is required." data-val-range="Display Order must be between 1 and 10000." data-val-range-min="1" data-val-range-max="10000" />
+                  <input name="UpdatedFaq.DisplayOrder" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.DisplayOrder : faq.DisplayOrder)" type="number" min="1" class="form-control" />
                   <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.DisplayOrder" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.DisplayOrder") }</span>
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">
@@ -325,21 +325,15 @@ document.getElementById('createFaqForm').addEventListener('submit', function(e) 
 
 document.querySelectorAll('.editFaqForm').forEach(form => {
     form.addEventListener('submit', function(e) {
+        // 1. Immediately lock down the form to stop native/jQuery interference
+        e.preventDefault();
+
         const modal = this.closest('.editFaqModal');
         const faqId = modal.getAttribute('data-faq-id');
         const answerInputId = 'EditAnswer-' + faqId;
-        
-        if (modal.quillInstance) {
-            if (modal.quillInstance.getText().trim() === '') {
-                document.getElementById(answerInputId).value = '';
-            } else {
-                document.getElementById(answerInputId).value = modal.quillInstance.root.innerHTML;
-            }
-        }
-        
         let isClientValid = true;
-        
-        // 1. Validate Question
+
+        // 2. Validate Question
         const questionInput = this.querySelector('[name="UpdatedFaq.Question"]');
         const questionSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Question"]');
         if (questionInput.value.trim() === '') {
@@ -349,39 +343,45 @@ document.querySelectorAll('.editFaqForm').forEach(form => {
             questionSpan.textContent = "";
         }
 
-        // 2. Validate Answer
+        // 3. Validate Answer (With Safe Quill Null Checks)
         const answerInput = document.getElementById(answerInputId);
         const answerSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.Answer"]');
-        if (modal.quillInstance.getText().trim() === '') {
+        if (modal.quillInstance && modal.quillInstance.getText().trim() === '') {
             answerInput.value = '';
             answerSpan.textContent = "An answer is required.";
             isClientValid = false;
-        } else {
+        } else if (modal.quillInstance) {
             answerInput.value = modal.quillInstance.root.innerHTML;
             answerSpan.textContent = "";
+        } else if (!answerInput.value) { // Fallback if Quill isn't loaded
+            answerSpan.textContent = "An answer is required.";
+            isClientValid = false;
         }
 
-        // 3. Validate Display Order
+        // 4. Validate Display Order
         const displayOrderInput = this.querySelector('[name="UpdatedFaq.DisplayOrder"]');
         const displayOrderSpan = modal.querySelector('[data-valmsg-for="UpdatedFaq.DisplayOrder"]');
-        if (!displayOrderInput.value || displayOrderInput.value < 1) {
+        if (!displayOrderInput.value || parseInt(displayOrderInput.value) < 1) {
             displayOrderSpan.textContent = "Display Order must be 1 or greater.";
             isClientValid = false;
         } else {
             displayOrderSpan.textContent = "";
         }
 
-        // Halt form submission if client validation fails
+        // Halt immediately if invalid
         if (!isClientValid) {
-            e.preventDefault();
-            return false;
+            return false; 
         }
 
+        // 5. Safe Publish Warning Check
         const isPublished = document.getElementById('isPublishedSwitchEdit-' + faqId).checked;
         if (isPublished) {
-            e.preventDefault();
             pendingForm = this;
-            new bootstrap.Modal(document.getElementById('publishWarningModal')).show();
+            const pubModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('publishWarningModal'));
+            pubModal.show();
+        } else {
+            // Valid & Not Published -> Force native submission bypass
+            this.submit();
         }
     });
 });
