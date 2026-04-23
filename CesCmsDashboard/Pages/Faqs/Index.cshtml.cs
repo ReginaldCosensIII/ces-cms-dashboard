@@ -33,12 +33,11 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostCreateAsync()
         {
-            ModelState.Remove("UpdatedFaq.Question");
-            ModelState.Remove("UpdatedFaq.Answer");
-            ModelState.Remove("UpdatedFaq.DisplayOrder");
-            ModelState.Remove("UpdatedFaq.Id");
+            // Clear the contaminated state that validated both forms
+            ModelState.Clear();
 
-            if (!ModelState.IsValid)
+            // Explicitly validate ONLY the NewFaq object
+            if (!TryValidateModel(NewFaq, nameof(NewFaq)))
             {
                 ViewData["OpenModal"] = "createFaqModal";
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
@@ -65,11 +64,11 @@ namespace CesCmsDashboard.Pages.Faqs
 
         public async Task<IActionResult> OnPostEditAsync()
         {
-            ModelState.Remove("NewFaq.Question");
-            ModelState.Remove("NewFaq.Answer");
-            ModelState.Remove("NewFaq.DisplayOrder");
+            // Clear the contaminated state that validated both forms
+            ModelState.Clear();
 
-            if (!ModelState.IsValid)
+            // Explicitly validate ONLY the UpdatedFaq object
+            if (!TryValidateModel(UpdatedFaq, nameof(UpdatedFaq)))
             {
                 ViewData["OpenModal"] = "editFaqModal-" + UpdatedFaq.Id;
                 Faq = await _context.Faqs.OrderBy(f => f.DisplayOrder).ToListAsync();
