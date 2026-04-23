@@ -62,19 +62,19 @@
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Question</label>
               <input name="UpdatedFaq.Question" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Question : faq.Question)" class="form-control form-control-lg fs-6" placeholder="Enter the FAQ question here..." data-val="true" data-val-required="A question is required." data-val-maxlength="Question cannot exceed 250 characters." data-val-maxlength-max="250" />
-              @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.Question")</span> }
+              <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Question" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Question") }</span>
            </div>
            <div class="mb-4">
               <label class="form-label fw-bold text-muted small text-uppercase">Answer</label>
               <div id="editor-edit-@faq.Id" class="quill-editor-container" style="height: 200px;">@Html.Raw(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)</div>
               <input type="hidden" id="EditAnswer-@faq.Id" name="UpdatedFaq.Answer" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.Answer : faq.Answer)" data-val="true" data-val-required="An answer is required." />
-              @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.Answer")</span> }
+              <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.Answer" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.Answer") }</span>
            </div>
            <div class="row g-4">
               <div class="col-sm-6">
                   <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
                   <input name="UpdatedFaq.DisplayOrder" value="@(Model.UpdatedFaq?.Id == faq.Id ? Model.UpdatedFaq.DisplayOrder : faq.DisplayOrder)" type="number" min="1" class="form-control" data-val="true" data-val-required="The Display Order field is required." data-val-range="Display Order must be between 1 and 10000." data-val-range-min="1" data-val-range-max="10000" />
-                  @if(Model.UpdatedFaq?.Id == faq.Id) { <span class="text-danger">@Html.ValidationMessage("UpdatedFaq.DisplayOrder")</span> }
+                  <span class="text-danger field-validation-valid" data-valmsg-for="UpdatedFaq.DisplayOrder" data-valmsg-replace="true">@if(Model.UpdatedFaq?.Id == faq.Id) { @Html.ValidationMessage("UpdatedFaq.DisplayOrder") }</span>
               </div>
               <div class="col-sm-6 d-flex align-items-end pb-1">
                   <div class="form-check form-switch fs-5">
