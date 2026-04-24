@@ -37,14 +37,29 @@ namespace CesCmsDashboard.Migrations
                 oldType: "character varying(255)",
                 oldMaxLength: 255);
 
-            migrationBuilder.AlterColumn<Guid>(
+            // 1. Drop the primary key constraint first
+            migrationBuilder.DropPrimaryKey(
+                name: "PK_TechTips",
+                table: "TechTips");
+
+            // 2. Drop the stubborn integer column
+            migrationBuilder.DropColumn(
+                name: "Id",
+                table: "TechTips");
+
+            // 3. Add the brand new Guid column
+            migrationBuilder.AddColumn<Guid>(
                 name: "Id",
                 table: "TechTips",
                 type: "uuid",
                 nullable: false,
-                oldClrType: typeof(int),
-                oldType: "integer")
-                .OldAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+
+            // 4. Re-establish the Primary Key
+            migrationBuilder.AddPrimaryKey(
+                name: "PK_TechTips",
+                table: "TechTips",
+                column: "Id");
 
             migrationBuilder.AlterColumn<string>(
                 name: "Question",
