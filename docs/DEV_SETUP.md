@@ -131,6 +131,42 @@ Local project-specific agent files may exist for convenience, but they should re
 
 Global reusable agent files should remain in the developer’s machine-level agent directory rather than this repo.
 
+## AI Copilot local configuration
+
+The Dashboard includes the **CES SEO Copilot**, which communicates with the OpenAI API using the official OpenAI .NET SDK. AI features require a valid OpenAI API key to function locally.
+
+### Setting up the API key
+
+1. Open (or create) `CesCmsDashboard/appsettings.Development.json`.
+2. Add the `SEO_API_KEY` entry at the root level of the JSON object:
+
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.AspNetCore": "Warning"
+    }
+  },
+  "SEO_API_KEY": "sk-your-key-here"
+}
+```
+
+3. Replace `sk-your-key-here` with your actual OpenAI secret key.
+
+### Important notes
+
+- `appsettings.Development.json` is listed in `.gitignore` and will **never be committed** to the repository. It is safe to store the key there without risk of accidental secret exposure.
+- If the key is missing or empty, the Copilot handler will log a `Warning` and return a graceful error message to the UI. The rest of the dashboard will continue to function normally.
+- The Copilot targets the `gpt-4o-mini` model. Ensure the API key belongs to an OpenAI organization with access to that model.
+- Do **not** add `SEO_API_KEY` to `appsettings.json` — that file is tracked by git.
+
+### Verifying the Copilot is active
+
+After adding the key, restart the application and check the System Status dropdown on the Dashboard. The **AI Copilot** row should display `Ready` when the key is detected.
+
+---
+
 ## Future setup expansion
 
 This document should be expanded later when the project reaches:
