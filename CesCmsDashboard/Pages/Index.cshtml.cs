@@ -6,10 +6,10 @@ namespace CesCmsDashboard.Pages;
 
 public class ActivityItem
 {
-    public string Title { get; set; }
-    public string Type { get; set; }
+    public string Title { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
     public DateTime Date { get; set; }
-    public string Status { get; set; }
+    public string Status { get; set; } = string.Empty;
 }
 
 public class IndexModel : PageModel
@@ -38,7 +38,7 @@ public class IndexModel : PageModel
             {
                 Title = f.Question,
                 Type = "FAQ",
-                Date = f.UpdatedAt ?? f.CreatedAt,
+                Date = f.UpdatedAt > DateTime.MinValue ? f.UpdatedAt : f.CreatedAt,
                 Status = f.IsPublished ? "Published" : "Draft"
             })
             .ToListAsync();
@@ -48,7 +48,7 @@ public class IndexModel : PageModel
             {
                 Title = t.Title,
                 Type = "Tech Tip",
-                Date = t.UpdatedAt ?? t.CreatedAt,
+                Date = t.UpdatedAt.HasValue ? t.UpdatedAt.Value : t.CreatedAt,
                 Status = t.IsPublished ? "Published" : "Draft"
             })
             .ToListAsync();
