@@ -78,15 +78,29 @@ namespace CesCmsDashboard.Pages.TechTips
             var existing = await _context.TechTips.FindAsync(techTip.Id);
             if (existing == null) return NotFound();
 
-            existing.Title = techTip.Title;
-            existing.Slug = techTip.Slug;
-            existing.Category = techTip.Category;
-            existing.VideoUrl = techTip.VideoUrl;
-            existing.Content = techTip.Content;
-            existing.IsPublished = techTip.IsPublished;
-            existing.UpdatedAt = DateTime.UtcNow;
+            bool hasChanges = false;
+            if (existing.Title != techTip.Title || 
+                existing.Slug != techTip.Slug || 
+                existing.Content != techTip.Content || 
+                existing.VideoUrl != techTip.VideoUrl || 
+                existing.Category != techTip.Category || 
+                existing.IsPublished != techTip.IsPublished)
+            {
+                hasChanges = true;
+            }
 
-            await _context.SaveChangesAsync();
+            if (hasChanges)
+            {
+                existing.Title = techTip.Title;
+                existing.Slug = techTip.Slug;
+                existing.Category = techTip.Category;
+                existing.VideoUrl = techTip.VideoUrl;
+                existing.Content = techTip.Content;
+                existing.IsPublished = techTip.IsPublished;
+                existing.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
             return new JsonResult(new { success = true });
         }
     }

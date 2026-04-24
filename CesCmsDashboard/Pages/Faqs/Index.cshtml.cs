@@ -136,13 +136,25 @@ namespace CesCmsDashboard.Pages.Faqs
                 return Partial("_EditFaqPartial", faq);
             }
 
-            existing.Question = faq.Question;
-            existing.Answer = faq.Answer;
-            existing.DisplayOrder = faq.DisplayOrder;
-            existing.IsPublished = faq.IsPublished;
-            existing.UpdatedAt = DateTime.UtcNow;
+            bool hasChanges = false;
+            if (existing.Question != faq.Question || 
+                existing.Answer != faq.Answer || 
+                existing.DisplayOrder != faq.DisplayOrder || 
+                existing.IsPublished != faq.IsPublished)
+            {
+                hasChanges = true;
+            }
 
-            await _context.SaveChangesAsync();
+            if (hasChanges)
+            {
+                existing.Question = faq.Question;
+                existing.Answer = faq.Answer;
+                existing.DisplayOrder = faq.DisplayOrder;
+                existing.IsPublished = faq.IsPublished;
+                existing.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
             return new JsonResult(new { success = true });
         }
     }
