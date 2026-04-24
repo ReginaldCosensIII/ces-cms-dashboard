@@ -4,8 +4,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CesCmsDashboard.Pages;
 
-// Lightweight record for the recent activity feed
-public record RecentActivityItem(string Title, string Type, DateTime Date);
+public class ActivityItem
+{
+    public string Title { get; set; }
+    public string Type { get; set; }
+    public DateTime Date { get; set; }
+    public string Status { get; set; }
+}
 
 public class IndexModel : PageModel
 {
@@ -16,47 +21,42 @@ public class IndexModel : PageModel
         _context = context;
     }
 
-    // ── Aggregate Stats ──────────────────────────────────────
-    public int TotalAssets    { get; private set; }
-    public int PublishedAssets { get; private set; }
-    public int DraftAssets    { get; private set; }
-
-    // ── Recent Activity Feed ─────────────────────────────────
-    public List<RecentActivityItem> RecentActivity { get; private set; } = new();
+    public int TotalFaqs { get; private set; }
+    public int TotalTechTips { get; private set; }
+    public bool IsDatabaseConnected { get; private set; }
+    public List<ActivityItem> RecentActivities { get; set; } = new();
 
     public async Task OnGetAsync()
     {
-        // FAQ counts
-        var faqTotal     = await _context.Faqs.CountAsync();
-        var faqPublished = await _context.Faqs.CountAsync(f => f.IsPublished);
+        IsDatabaseConnected = await _context.Database.CanConnectAsync();
 
-        // TechTip counts
-        var tipTotal     = await _context.TechTips.CountAsync();
-        var tipPublished = await _context.TechTips.CountAsync(t => t.IsPublished);
+        TotalFaqs = await _context.Faqs.CountAsync();
+        TotalTechTips = await _context.TechTips.CountAsync();
 
-        TotalAssets     = faqTotal + tipTotal;
-        PublishedAssets = faqPublished + tipPublished;
-        DraftAssets     = TotalAssets - PublishedAssets;
-
-        // Gather 5 newest FAQs
         var recentFaqs = await _context.Faqs
-            .OrderByDescending(f => f.UpdatedAt)
-            .Take(5)
-            .Select(f => new RecentActivityItem(f.Question, "FAQ", f.UpdatedAt))
+            .Select(f => new ActivityItem
+            {
+                Title = f.Question,
+                Type = "FAQ",
+                Date = f.UpdatedAt ?? f.CreatedAt,
+                Status = f.IsPublished ? "Published" : "Draft"
+            })
             .ToListAsync();
 
-        // Gather 5 newest TechTips
         var recentTips = await _context.TechTips
-            .OrderByDescending(t => t.CreatedAt)
-            .Take(5)
-            .Select(t => new RecentActivityItem(t.Title, "Tech Tip", t.CreatedAt))
+            .Select(t => new ActivityItem
+            {
+                Title = t.Title,
+                Type = "Tech Tip",
+                Date = t.UpdatedAt ?? t.CreatedAt,
+                Status = t.IsPublished ? "Published" : "Draft"
+            })
             .ToListAsync();
 
-        // Merge, sort descending, take top 5
-        RecentActivity = recentFaqs
+        RecentActivities = recentFaqs
             .Concat(recentTips)
-            .OrderByDescending(a => a.Date)
-            .Take(5)
+            .OrderByDescending(x => x.Date)
+            .Take(10)
             .ToList();
     }
 }

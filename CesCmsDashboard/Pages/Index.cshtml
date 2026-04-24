@@ -14,58 +14,58 @@
 <div class="row g-3 mb-4">
 
     <!-- Total Content -->
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-4">
         <div class="stat-card">
             <div class="stat-card-icon icon-slate">
                 <i data-lucide="files" class="icon-lg" style="color:var(--color-dark-slate);"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-value">@Model.TotalAssets</div>
-                <div class="stat-label">Total Content</div>
-                <div class="stat-sub">FAQs &amp; Tech Tips</div>
+                <div class="stat-value">@Model.TotalFaqs</div>
+                <div class="stat-label">Total FAQs</div>
+                <div class="stat-sub">Frequently Asked Questions</div>
             </div>
         </div>
     </div>
 
     <!-- Published -->
-    <div class="col-sm-6 col-xl-3">
+    <div class="col-sm-6 col-xl-4">
         <div class="stat-card">
             <div class="stat-card-icon icon-green">
                 <i data-lucide="circle-check-big" class="icon-lg" style="color:#1a6644;"></i>
             </div>
             <div class="stat-card-body">
-                <div class="stat-value">@Model.PublishedAssets</div>
-                <div class="stat-label">Published</div>
-                <div class="stat-sub text-success fw-medium">Live on site</div>
+                <div class="stat-value">@Model.TotalTechTips</div>
+                <div class="stat-label">Total Tech Tips</div>
+                <div class="stat-sub text-success fw-medium">Technical Guides</div>
             </div>
         </div>
     </div>
 
-    <!-- Drafts -->
-    <div class="col-sm-6 col-xl-3">
+    <!-- System Status -->
+    <div class="col-sm-12 col-xl-4">
         <div class="stat-card">
-            <div class="stat-card-icon icon-amber">
-                <i data-lucide="file-pen-line" class="icon-lg" style="color:#d97706;"></i>
-            </div>
-            <div class="stat-card-body">
-                <div class="stat-value">@Model.DraftAssets</div>
-                <div class="stat-label">Drafts</div>
-                <div class="stat-sub" style="color:#d97706;">Awaiting publish</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- System Status (static) -->
-    <div class="col-sm-6 col-xl-3">
-        <div class="stat-card">
-            <div class="stat-card-icon icon-green">
-                <i data-lucide="activity" class="icon-lg" style="color:#1a6644;"></i>
-            </div>
-            <div class="stat-card-body">
-                <div class="stat-value">Online</div>
-                <div class="stat-label">System Status</div>
-                <div class="stat-sub text-success fw-medium">All services healthy</div>
-            </div>
+            @if (Model.IsDatabaseConnected)
+            {
+                <div class="stat-card-icon" style="background-color:rgba(128, 0, 0, 0.1);">
+                    <i data-lucide="activity" class="icon-lg" style="color:#800000;"></i>
+                </div>
+                <div class="stat-card-body">
+                    <div class="stat-value" style="color:#800000;">Online</div>
+                    <div class="stat-label">System Status</div>
+                    <div class="stat-sub fw-medium" style="color:#800000;">Online & Connected</div>
+                </div>
+            }
+            else
+            {
+                <div class="stat-card-icon" style="background-color:rgba(255, 0, 0, 0.1);">
+                    <i data-lucide="activity" class="icon-lg" style="color:red;"></i>
+                </div>
+                <div class="stat-card-body">
+                    <div class="stat-value" style="color:red;">Offline</div>
+                    <div class="stat-label">System Status</div>
+                    <div class="stat-sub text-danger fw-medium">Database Error</div>
+                </div>
+            }
         </div>
     </div>
 
@@ -78,14 +78,14 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2 px-4 py-3">
-                <div class="stat-card-icon icon-slate" style="width:34px;height:34px;border-radius:8px;">
-                    <i data-lucide="list-checks" class="icon-md"></i>
+                <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(128,0,0,0.1);">
+                    <i data-lucide="list-checks" class="icon-md" style="color:#800000;"></i>
                 </div>
                 <h5 class="card-title fw-bold mb-0 activity-card-title">Recent Activity</h5>
             </div>
             <div class="card-body px-4 py-2">
 
-                @if (!Model.RecentActivity.Any())
+                @if (!Model.RecentActivities.Any())
                 {
                     <div class="d-flex align-items-center justify-content-center py-5 text-muted">
                         <i data-lucide="inbox" class="me-2 icon-md"></i>
@@ -95,23 +95,24 @@
                 else
                 {
                     <ul class="list-unstyled mb-0 activity-list">
-                        @foreach (var item in Model.RecentActivity)
+                        @foreach (var activity in Model.RecentActivities)
                         {
                             <!-- Determine icon + color class by content type -->
-                            var iconName  = item.Type == "FAQ" ? "message-square-more" : "lightbulb";
-                            var iconClass = item.Type == "FAQ" ? "activity-icon-edit"  : "activity-icon-plus";
-                            var typeLabel = item.Type;
-                            var dateLabel = item.Date.ToString("MMM d, yyyy");
+                            var iconName  = activity.Type == "FAQ" ? "message-square-more" : "lightbulb";
+                            var iconClass = activity.Type == "FAQ" ? "activity-icon-edit"  : "activity-icon-plus";
+                            var typeLabel = activity.Type;
+                            var statusLabel = activity.Status;
+                            var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt");
 
                             <li class="activity-item">
                                 <div class="activity-icon-wrap @iconClass">
                                     <i data-lucide="@iconName" class="icon-sm"></i>
                                 </div>
                                 <div class="activity-text">
-                                    <span class="activity-action" title="@item.Title">@item.Title</span>
+                                    <span class="activity-action" title="@activity.Title">@activity.Title - @statusLabel</span>
                                     <span class="activity-time">
                                         <span class="badge rounded-pill px-2 py-1 me-1"
-                                              style="font-size:0.65rem;background:@(item.Type == "FAQ" ? "rgba(47,79,79,0.1)" : "rgba(133,204,170,0.25)");color:@(item.Type == "FAQ" ? "var(--color-dark-slate)" : "#1a6644");">
+                                              style="font-size:0.65rem;background:@(activity.Type == "FAQ" ? "rgba(128,0,0,0.1)" : "rgba(133,204,170,0.25)");color:@(activity.Type == "FAQ" ? "#800000" : "#1a6644");">
                                             @typeLabel
                                         </span>
                                         @dateLabel
