@@ -7,22 +7,31 @@
 <!-- Page Header -->
 <div class="page-header">
     <h1 class="mb-0">Dashboard</h1>
-    <p class="page-subtitle mb-0">Welcome back. Here's a live overview of your content and system.</p>
+    <p class="page-subtitle mb-0">Live intelligence for your content pipeline.</p>
 </div>
 
-<!-- ── Stat Cards Row (3-column) ─────────────────────────── -->
+<!-- ── Top Stat Cards (3-column) ─────────────────────────── -->
 <div class="row g-3 mb-4">
 
     <!-- Card 1: Published Content -->
     <div class="col-md-6 col-xl-4">
         <div class="stat-card">
             <div class="stat-card-icon icon-green">
-                <i data-lucide="circle-check-big" class="icon-lg text-success"></i>
+                <i data-lucide="circle-check-big" class="icon-lg" style="color:#1a6644;"></i>
             </div>
             <div class="stat-card-body">
                 <div class="stat-value">@(Model.PublishedFaqs + Model.PublishedTechTips)</div>
-                <div class="stat-label">Published Content</div>
-                <div class="stat-sub">@Model.PublishedFaqs FAQs &nbsp;|&nbsp; @Model.PublishedTechTips Tech Tips</div>
+                <div class="stat-label">Published</div>
+                <div class="stat-metric-row">
+                    <span class="stat-metric-pill pill-green">
+                        <i data-lucide="message-square-more" style="width:10px;height:10px;"></i>
+                        @Model.PublishedFaqs FAQs
+                    </span>
+                    <span class="stat-metric-pill pill-slate">
+                        <i data-lucide="lightbulb" style="width:10px;height:10px;"></i>
+                        @Model.PublishedTechTips Tips
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -31,57 +40,86 @@
     <div class="col-md-6 col-xl-4">
         <div class="stat-card">
             <div class="stat-card-icon icon-amber">
-                <i data-lucide="file-pen-line" class="icon-lg text-warning"></i>
+                <i data-lucide="file-pen-line" class="icon-lg" style="color:#92400e;"></i>
             </div>
             <div class="stat-card-body">
                 <div class="stat-value">@(Model.DraftFaqs + Model.DraftTechTips)</div>
                 <div class="stat-label">Drafts Pending</div>
-                <div class="stat-sub">@Model.DraftFaqs FAQs &nbsp;|&nbsp; @Model.DraftTechTips Tech Tips</div>
+                <div class="stat-metric-row">
+                    <span class="stat-metric-pill pill-amber">
+                        <i data-lucide="message-square-more" style="width:10px;height:10px;"></i>
+                        @Model.DraftFaqs FAQs
+                    </span>
+                    <span class="stat-metric-pill pill-amber">
+                        <i data-lucide="lightbulb" style="width:10px;height:10px;"></i>
+                        @Model.DraftTechTips Tips
+                    </span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Card 3: System Health -->
+    <!-- Card 3: System Health — full-width dedicated component -->
     <div class="col-md-12 col-xl-4">
-        <div class="stat-card align-items-start">
-            <div class="stat-card-icon icon-green flex-shrink-0">
-                <i data-lucide="shield-check" class="icon-lg text-success"></i>
+        <div class="health-card">
+            <div class="health-card-header">
+                <div class="health-card-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+                <span class="health-card-title">System Health</span>
             </div>
-            <div class="stat-card-body w-100">
-                <div class="stat-label mb-2">System Health</div>
-                <ul class="list-unstyled mb-0 d-flex flex-column gap-1">
-                    <li class="d-flex align-items-center justify-content-between">
-                        <span class="stat-sub mb-0">Database</span>
-                        @if (Model.IsDatabaseConnected)
-                        {
-                            <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1">Online</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-danger-subtle text-danger rounded-pill px-2 py-1">Offline</span>
-                        }
-                    </li>
-                    <li class="d-flex align-items-center justify-content-between">
-                        <span class="stat-sub mb-0">AI Co-Pilot</span>
-                        @if (Model.IsAiApiConfigured)
-                        {
-                            <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1">Connected</span>
-                        }
-                        else
-                        {
-                            <span class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">Pending Setup</span>
-                        }
-                    </li>
-                    <li class="d-flex align-items-center justify-content-between">
-                        <span class="stat-sub mb-0">Public Website</span>
-                        <span class="badge bg-warning-subtle text-warning rounded-pill px-2 py-1">Ping: Pending Setup</span>
-                    </li>
-                    <li class="d-flex align-items-center justify-content-between">
-                        <span class="stat-sub mb-0">SEO Injectors</span>
-                        <span class="badge bg-success-subtle text-success rounded-pill px-2 py-1">Status: Active</span>
-                    </li>
-                </ul>
-            </div>
+            <ul class="health-row-list">
+                <li class="health-row">
+                    <span class="health-row-label">
+                        <span class="health-service-icon svc-db">
+                            <i data-lucide="database"></i>
+                        </span>
+                        Database
+                    </span>
+                    @if (Model.IsDatabaseConnected)
+                    {
+                        <span class="health-badge badge-online">Online</span>
+                    }
+                    else
+                    {
+                        <span class="health-badge badge-offline">Offline</span>
+                    }
+                </li>
+                <li class="health-row">
+                    <span class="health-row-label">
+                        <span class="health-service-icon svc-ai">
+                            <i data-lucide="sparkles"></i>
+                        </span>
+                        AI Co-Pilot
+                    </span>
+                    @if (Model.IsAiApiConfigured)
+                    {
+                        <span class="health-badge badge-online">Connected</span>
+                    }
+                    else
+                    {
+                        <span class="health-badge badge-pending">Pending Setup</span>
+                    }
+                </li>
+                <li class="health-row">
+                    <span class="health-row-label">
+                        <span class="health-service-icon svc-web">
+                            <i data-lucide="globe"></i>
+                        </span>
+                        Public Website
+                    </span>
+                    <span class="health-badge badge-pending">Ping: Pending</span>
+                </li>
+                <li class="health-row">
+                    <span class="health-row-label">
+                        <span class="health-service-icon svc-seo">
+                            <i data-lucide="search"></i>
+                        </span>
+                        SEO Injectors
+                    </span>
+                    <span class="health-badge badge-online">Active</span>
+                </li>
+            </ul>
         </div>
     </div>
 
@@ -94,10 +132,14 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2 px-4 py-3">
-                <div class="stat-card-icon icon-maroon" style="width:34px;height:34px;border-radius:8px;">
+                <div class="stat-card-icon icon-maroon" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;">
                     <i data-lucide="list-checks" class="icon-md" style="color:var(--color-maroon);"></i>
                 </div>
                 <h5 class="card-title fw-bold mb-0 activity-card-title">Recent Activity</h5>
+                @if (Model.RecentActivities.Any())
+                {
+                    <span class="ms-auto stat-metric-pill pill-slate">@Model.RecentActivities.Count items</span>
+                }
             </div>
             <div class="card-body px-4 py-2">
 
@@ -105,7 +147,7 @@
                 {
                     <div class="d-flex align-items-center justify-content-center py-5 text-muted">
                         <i data-lucide="inbox" class="me-2 icon-md"></i>
-                        <span class="fs-7">No recent activity yet.</span>
+                        <span>No recent activity yet.</span>
                     </div>
                 }
                 else
@@ -113,28 +155,22 @@
                     <ul class="list-unstyled mb-0 activity-list">
                         @foreach (var activity in Model.RecentActivities)
                         {
-                            // Icon name by type
                             var iconName  = activity.Type == "FAQ" ? "message-square-more" : "lightbulb";
-                            // Task 4 color correction: FAQ → Maroon wrap, Tech Tip → Green wrap
-                            var iconClass = activity.Type == "FAQ" ? "activity-icon-save" : "activity-icon-plus";
-                            var typeLabel = activity.Type;
-                            var statusLabel = activity.Status;
+                            var iconClass = activity.Type == "FAQ" ? "activity-icon-save"   : "activity-icon-plus";
+                            var badgeClass = activity.Type == "FAQ" ? "badge-faq" : "badge-techtip";
+                            var statusClass = activity.Status == "Published" ? "status-published" : "status-draft";
                             var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt");
-                            // Badge colors: FAQ → Maroon, Tech Tip → Light Green
-                            var badgeBg    = activity.Type == "FAQ" ? "bg-danger-subtle" : "bg-success-subtle";
-                            var badgeColor = activity.Type == "FAQ" ? "text-danger"      : "text-success";
 
                             <li class="activity-item">
                                 <div class="activity-icon-wrap @iconClass">
-                                    <i data-lucide="@iconName" class="icon-sm"></i>
+                                    <i data-lucide="@iconName"></i>
                                 </div>
                                 <div class="activity-text">
                                     <span class="activity-action" title="@activity.Title">@activity.Title</span>
-                                    <span class="activity-time">
-                                        <span class="badge rounded-pill px-2 py-1 me-1 @badgeBg @badgeColor" style="font-size:0.65rem;">
-                                            @typeLabel
-                                        </span>
-                                        @statusLabel &mdash; @dateLabel
+                                    <span class="activity-time d-flex align-items-center gap-1 flex-wrap">
+                                        <span class="activity-badge @badgeClass">@activity.Type</span>
+                                        <span class="activity-status @statusClass">@activity.Status</span>
+                                        <span>@dateLabel</span>
                                     </span>
                                 </div>
                             </li>
@@ -149,24 +185,20 @@
     <!-- Right: CES SEO Copilot -->
     <div class="col-lg-6">
         <div class="card h-100 d-flex flex-column">
-            <div class="card-header d-flex align-items-center gap-2 px-4 py-3"
-                 style="background:linear-gradient(135deg,var(--color-dark-slate-deep),var(--color-dark-slate))!important;border-radius:14px 14px 0 0!important;">
-                <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(133,204,170,0.2);">
+            <div class="card-header d-flex align-items-center gap-2 px-4 py-3 copilot-header">
+                <div class="stat-card-icon copilot-icon" style="width:36px;height:36px;border-radius:10px;flex-shrink:0;">
                     <i data-lucide="sparkles" class="icon-md" style="color:var(--color-light-green);"></i>
                 </div>
-                <h5 class="card-title fw-bold mb-0 text-white" style="font-size:0.95rem;">
-                    CES SEO Copilot
-                </h5>
-                <span class="ms-auto badge" style="background:rgba(133,204,170,0.18);color:var(--color-light-green);border-radius:6px;font-size:0.68rem;letter-spacing:0.05em;">BETA</span>
+                <h5 class="card-title fw-bold mb-0 text-white" style="font-size:0.95rem;">CES SEO Copilot</h5>
+                <span class="ms-auto copilot-beta-badge">BETA</span>
             </div>
             <div class="card-body d-flex flex-column px-4 pt-4">
 
                 <!-- Chat history area -->
-                <div class="flex-grow-1 p-3 mb-3 rounded-3 overflow-auto"
-                     style="min-height:180px;background:#f8fafc;border:1px solid rgba(47,79,79,0.08);">
+                <div class="copilot-chat-area flex-grow-1 p-3 mb-3">
                     <div class="d-flex mb-3">
                         <div class="chat-bubble">
-                            <strong style="color:var(--color-dark-slate);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">Copilot</strong><br>
+                            <strong class="copilot-label">Copilot</strong><br>
                             Welcome to the SEO Copilot. How can I assist you with your content today?
                         </div>
                     </div>
@@ -174,17 +206,15 @@
 
                 <!-- Input area -->
                 <div class="input-group mt-auto">
-                    <input type="text" class="form-control"
+                    <input type="text" class="form-control copilot-input"
                            placeholder="Ask Copilot a question..."
                            aria-label="Ask the SEO Copilot a question"
-                           id="copilot-input"
-                           style="border-right:none;border-radius:9px 0 0 9px;">
-                    <button class="btn d-flex align-items-center gap-2 px-3"
+                           id="copilot-input">
+                    <button class="btn copilot-send-btn d-flex align-items-center gap-2 px-3"
                             id="copilot-send-btn"
-                            type="button"
-                            style="background:var(--color-dark-slate);color:#fff;border-radius:0 9px 9px 0;">
+                            type="button">
                         <i data-lucide="send" class="icon-sm"></i>
-                        <span class="d-none d-sm-inline" style="font-size:0.85rem;">Send</span>
+                        <span class="d-none d-sm-inline">Send</span>
                     </button>
                 </div>
 

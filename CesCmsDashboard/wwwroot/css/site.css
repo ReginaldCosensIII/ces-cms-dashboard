@@ -785,3 +785,233 @@ html.sidebar-pre-collapsed .main-content {
 .ql-toolbar.ql-snow .ql-formats button.ql-active .ql-fill {
   fill: var(--color-dark-slate) !important;
 }
+
+/* ============================================================
+   18. DASHBOARD — Stat Metric Pills & System Health Panel
+   ============================================================ */
+
+/* ── Metric Pills (breakdown inside stat cards) ── */
+.stat-metric-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.stat-metric-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+.stat-metric-pill.pill-green  { background: rgba(133, 204, 170, 0.18); color: #1a6644; }
+.stat-metric-pill.pill-amber  { background: rgba(245, 158, 11, 0.14);  color: #92400e; }
+.stat-metric-pill.pill-maroon { background: var(--color-maroon-dim);   color: var(--color-maroon); }
+.stat-metric-pill.pill-slate  { background: rgba(47, 79, 79, 0.1);     color: var(--color-dark-slate); }
+
+/* ── System Health Card (full-width, no side icon) ── */
+.health-card {
+  border-radius: 14px !important;
+  border: 1px solid rgba(47, 79, 79, 0.07) !important;
+  box-shadow: var(--shadow-card);
+  background: var(--bg-surface) !important;
+  transition: box-shadow 0.25s ease, transform 0.25s ease;
+  overflow: hidden;
+}
+.health-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform: translateY(-2px);
+}
+
+.health-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 18px 22px 14px;
+  border-bottom: 1px solid rgba(47, 79, 79, 0.07);
+}
+
+.health-card-header .health-card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: rgba(133, 204, 170, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.health-card-header .health-card-icon .lucide {
+  width: 20px;
+  height: 20px;
+  color: #1a6644;
+}
+
+.health-card-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9ca3af;
+}
+
+/* ── Individual Health Rows ── */
+.health-row-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.health-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 22px;
+  border-bottom: 1px solid rgba(47, 79, 79, 0.06);
+  transition: background 0.2s ease;
+}
+.health-row:last-child { border-bottom: none; }
+.health-row:hover { background: rgba(47, 79, 79, 0.025); }
+
+.health-row-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.health-row-label .health-service-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.health-service-icon.svc-db      { background: rgba(47, 79, 79, 0.08); }
+.health-service-icon.svc-ai      { background: rgba(133, 204, 170, 0.18); }
+.health-service-icon.svc-web     { background: rgba(245, 158, 11, 0.12); }
+.health-service-icon.svc-seo     { background: rgba(102, 0, 51, 0.08); }
+.health-service-icon .lucide     { width: 13px !important; height: 13px !important; }
+
+.svc-db  .lucide { color: var(--color-dark-slate); }
+.svc-ai  .lucide { color: #1a6644; }
+.svc-web .lucide { color: #92400e; }
+.svc-seo .lucide { color: var(--color-maroon); }
+
+/* ── Status Badges (replaces Bootstrap -subtle) ── */
+.health-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.health-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.health-badge.badge-online  { background: rgba(34, 197, 94, 0.12);  color: #15803d; }
+.health-badge.badge-online::before  { background: #22c55e; box-shadow: 0 0 0 2px rgba(34,197,94,0.25); }
+.health-badge.badge-offline { background: rgba(239, 68, 68, 0.12);  color: #dc2626; }
+.health-badge.badge-offline::before { background: #ef4444; box-shadow: 0 0 0 2px rgba(239,68,68,0.25); }
+.health-badge.badge-pending { background: rgba(245, 158, 11, 0.12); color: #92400e; }
+.health-badge.badge-pending::before { background: #f59e0b; box-shadow: 0 0 0 2px rgba(245,158,11,0.25); }
+
+/* ── Activity feed type badges ── */
+.activity-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+.activity-badge.badge-faq     { background: var(--color-maroon-dim); color: var(--color-maroon); }
+.activity-badge.badge-techtip { background: rgba(133, 204, 170, 0.22); color: #1a6644; }
+
+/* Activity status pill */
+.activity-status {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 7px;
+  border-radius: 20px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.activity-status.status-published { background: rgba(34, 197, 94, 0.1); color: #15803d; }
+.activity-status.status-draft     { background: rgba(245, 158, 11, 0.1); color: #92400e; }
+
+/* ============================================================
+   19. COPILOT CARD
+   ============================================================ */
+.copilot-header {
+  background: linear-gradient(135deg, var(--color-dark-slate-deep), var(--color-dark-slate)) !important;
+  border-radius: 14px 14px 0 0 !important;
+}
+
+.copilot-icon {
+  background: rgba(133, 204, 170, 0.2);
+}
+
+.copilot-beta-badge {
+  background: rgba(133, 204, 170, 0.18);
+  color: var(--color-light-green);
+  border-radius: 6px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 3px 8px;
+}
+
+.copilot-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-dark-slate);
+}
+
+.copilot-chat-area {
+  min-height: 180px;
+  background: #f8fafc;
+  border: 1px solid rgba(47, 79, 79, 0.08);
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.copilot-input {
+  border-right: none;
+  border-radius: 9px 0 0 9px !important;
+}
+
+.copilot-send-btn {
+  background: var(--color-dark-slate);
+  color: var(--color-white);
+  border-color: var(--color-dark-slate);
+  border-radius: 0 9px 9px 0 !important;
+  font-size: 0.85rem;
+}
+.copilot-send-btn:hover {
+  background: var(--color-dark-slate-deep);
+  border-color: var(--color-dark-slate-deep);
+  color: var(--color-white);
+}
