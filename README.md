@@ -75,6 +75,7 @@ Planned technical stack for the current phase:
 - PostgreSQL for data storage
 - Entity Framework Core for data access and migrations
 - IIS-compatible hosting model configured as a sub-application
+- **CES SEO Copilot** — AI-powered chat assistant integrated directly into the Dashboard via the official OpenAI .NET SDK (`gpt-4o-mini`), a secure Razor Pages AJAX handler, and a vanilla JS `fetch` pipeline with Antiforgery token support
 
 ## Development expectations
 
@@ -110,4 +111,4 @@ Core documentation files:
 
 ## Status note
 
-This repository's UI foundation is complete and locked. The current focus is establishing the C# Entity Framework architecture to support database persistence before advancing to public API delivery.
+This repository's UI foundation is complete and locked. The CES SEO Copilot AI integration (`feat/copilot-initial-setup`) has been implemented and is pending merge. The current focus is establishing the C# Entity Framework architecture to support database persistence — including future Copilot chat history logging — before advancing to public API delivery.
