@@ -46,6 +46,14 @@
         scrollbar-width: thin;
         padding-right: 8px;
     }
+
+    /* Recent Activity Feed Scroll Area */
+    #recent-activity-feed {
+        max-height: 250px; /* Matches the initial height of the Copilot chat */
+        overflow-y: auto;
+        scrollbar-width: thin;
+        padding-right: 8px;
+    }
 </style>
 
 <!-- Page Header -->
@@ -149,7 +157,7 @@
                 }
                 else
                 {
-                    <ul class="list-unstyled mb-0 activity-list">
+                    <ul id="recent-activity-feed" class="list-unstyled mb-0 activity-list">
                         @foreach (var activity in Model.RecentActivities)
                         {
                             <!-- Determine icon + color class by content type -->
