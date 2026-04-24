@@ -5,7 +5,7 @@ namespace CesCmsDashboard.Models
 {
     public class TechTip
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         [Required(ErrorMessage = "A title is required.")]
         [MaxLength(250, ErrorMessage = "Title cannot exceed 250 characters.")]

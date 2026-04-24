@@ -1,0 +1,413 @@
+@page
+@model CesCmsDashboard.Pages.TechTips.IndexModel
+@{
+    ViewData["Title"] = "Tech Tips";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-2">
+    <h2 class="mb-0 fw-bold text-semantic-sidebar">Tech Tips Management</h2>
+    <button class="btn btn-primary d-flex align-items-center gap-2" data-bs-toggle="modal" data-bs-target="#create-tech-tip-modal">
+        <i data-lucide="plus-circle" class="icon-sm"></i> Create New
+    </button>
+</div>
+
+<div class="card border-0 shadow-sm mb-5">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4">Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="border-top-0">
+            @foreach (var techTip in Model.TechTips) {
+                    <tr>
+                        <td class="ps-4 fw-medium text-truncate max-w-300">@Html.DisplayFor(modelItem => techTip.Title)</td>
+                        <td>@Html.DisplayFor(modelItem => techTip.Category)</td>
+                        <td>
+                            @if (techTip.IsPublished)
+                            {
+                                <span class="badge bg-success rounded-pill px-3">Published</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-secondary rounded-pill px-3">Draft</span>
+                            }
+                        </td>
+                        <td>@techTip.CreatedAt.ToShortDateString()</td>
+                        <td class="text-end pe-4">
+                            <button type="button" class="btn btn-sm btn-outline-primary d-inline-flex align-items-center gap-1" onclick="loadEditModal('@techTip.Id')">
+                                <i data-lucide="edit-3" class="icon-sm"></i> Edit
+                            </button>
+                            <button class="btn btn-sm btn-outline-danger d-inline-flex align-items-center gap-1 ms-1" data-bs-toggle="modal" data-bs-target="#delete-tech-tip-modal" data-id="@techTip.Id">
+                                <i data-lucide="trash-2" class="icon-sm"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+            }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Create Tech Tip Modal -->
+<div class="modal fade" id="create-tech-tip-modal" tabindex="-1" aria-labelledby="create-tech-tip-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <form id="create-tech-tip-form" method="post" asp-page-handler="Create">
+        <div class="modal-header bg-semantic-navbar border-bottom-0 text-white">
+          <h5 class="modal-title fw-bold text-white" id="create-tech-tip-modal-label">Create Tech Tip</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4">
+           <div class="row g-4 mb-4">
+               <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Title</label>
+                  <input asp-for="NewTechTip.Title" class="form-control form-control-lg fs-6" placeholder="Enter title..." />
+                  <span asp-validation-for="NewTechTip.Title" class="text-danger"></span>
+               </div>
+               <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Slug</label>
+                  <input asp-for="NewTechTip.Slug" class="form-control form-control-lg fs-6" placeholder="enter-slug..." />
+                  <span asp-validation-for="NewTechTip.Slug" class="text-danger"></span>
+               </div>
+           </div>
+           <div class="row g-4 mb-4">
+               <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Category</label>
+                  <input asp-for="NewTechTip.Category" class="form-control form-control-lg fs-6" placeholder="Category..." />
+                  <span asp-validation-for="NewTechTip.Category" class="text-danger"></span>
+               </div>
+               <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Video URL</label>
+                  <input asp-for="NewTechTip.VideoUrl" class="form-control form-control-lg fs-6" placeholder="Video URL..." />
+                  <span asp-validation-for="NewTechTip.VideoUrl" class="text-danger"></span>
+               </div>
+           </div>
+           <div class="mb-4">
+              <label class="form-label fw-bold text-muted small text-uppercase">Content</label>
+              <div id="create-quill-editor" class="quill-editor-container" style="height: 300px;"></div>
+              <input type="hidden" id="create-content-input" asp-for="NewTechTip.Content" />
+              <span asp-validation-for="NewTechTip.Content" class="text-danger"></span>
+           </div>
+           <div class="row g-4">
+              <div class="col-sm-12 d-flex align-items-end pb-1">
+                  <div class="form-check form-switch fs-5">
+                      <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchCreate" asp-for="NewTechTip.IsPublished">
+                      <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchCreate">Published to site</label>
+                  </div>
+              </div>
+           </div>
+        </div>
+        <div class="modal-footer border-top-0 pt-0 pb-4 px-4 bg-transparent d-flex justify-content-between">
+          <button type="button" class="btn btn-light border fw-medium" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary d-flex align-items-center gap-2 fw-medium px-4">
+              <i data-lucide="save" class="icon-sm"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Tech Tip Modal -->
+<div class="modal fade" id="delete-tech-tip-modal" tabindex="-1" aria-labelledby="delete-tech-tip-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow">
+      <form method="post" asp-page-handler="Delete">
+        <input type="hidden" name="id" />
+        <div class="modal-header bg-danger border-bottom-0 text-white">
+          <h5 class="modal-title fw-bold text-white" id="delete-tech-tip-modal-label">Delete Tech Tip</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body p-4 text-center">
+           <i data-lucide="alert-triangle" class="text-danger mb-3" style="width: 48px; height: 48px;"></i>
+           <p class="fs-5 mb-1 text-semantic-sidebar">Are you sure you want to delete this Tech Tip?</p>
+           <p class="text-muted small">This action cannot be undone.</p>
+        </div>
+        <div class="modal-footer border-top-0 pt-0 pb-4 px-4 bg-transparent d-flex justify-content-between">
+          <button type="button" class="btn btn-light border fw-medium" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-danger d-flex align-items-center gap-2 fw-medium px-4">
+              <i data-lucide="trash-2" class="icon-sm text-white"></i> Delete Tech Tip
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Publish Warning Modal -->
+<div class="modal fade" id="publish-warning-modal" tabindex="-1" aria-labelledby="publish-warning-modal-label" aria-hidden="true" style="z-index: 1060;">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title fw-bold" id="publish-warning-modal-label">Confirm Immediate Publication</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center p-4">
+         <i data-lucide="alert-triangle" class="text-danger mb-3" style="width: 48px; height: 48px;"></i>
+         <p class="fs-5 mb-0">This content will be published to the live website immediately.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-secondary">Preview (Coming Soon)</button>
+        <button type="button" id="confirmPublishBtn" class="btn btn-danger d-flex align-items-center gap-2">
+            <i data-lucide="check-circle" class="icon-sm"></i> Publish Immediately
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="edit-modal-container"></div>
+
+@section Scripts {
+<partial name="_ValidationScriptsPartial" />
+<script>
+    $.validator.setDefaults({ ignore: "" });
+</script>
+<script>
+// ── Quill Tooltip Map ────────────────────────────────────────────────────────
+const quillTooltips = {
+    'ql-bold':        'Bold (Ctrl+B)',
+    'ql-italic':      'Italic (Ctrl+I)',
+    'ql-underline':   'Underline (Ctrl+U)',
+    'ql-strike':      'Strikethrough',
+    'ql-list':        'List',
+    'ql-link':        'Insert Link',
+    'ql-clean':       'Remove Formatting',
+};
+
+// Search the parent element for .ql-toolbar (works regardless of Quill v2 insertion point)
+function applyQuillTooltips(editorContainerId) {
+    const container = document.getElementById(editorContainerId);
+    if (!container) return;
+    const toolbar = container.parentElement.querySelector('.ql-toolbar');
+    if (!toolbar) return;
+    toolbar.querySelectorAll('button, .ql-picker-label').forEach(el => {
+        for (const [cls, label] of Object.entries(quillTooltips)) {
+            if (el.classList.contains(cls)) {
+                el.setAttribute('title', label);
+                el.setAttribute('aria-label', label);
+                break;
+            }
+        }
+    });
+}
+
+// Shared toolbar config
+const TOOLBAR_CONFIG = [
+    ['bold', 'italic', 'underline', 'strike'],
+    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['link'],
+    ['clean']
+];
+
+// ── Create Modal ─────────────────────────────────────────────────────────────
+let createQuill = null;
+
+document.getElementById('create-tech-tip-modal').addEventListener('shown.bs.modal', function () {
+    if (!createQuill) {
+        createQuill = new Quill('#create-quill-editor', {
+            theme: 'snow',
+            placeholder: 'Write the content here…',
+            modules: { toolbar: TOOLBAR_CONFIG }
+        });
+        applyQuillTooltips('create-quill-editor');
+        createQuill.on('text-change', () => {
+            document.getElementById('create-content-input').value = createQuill.root.innerHTML;
+        });
+    }
+
+    if (document.getElementById('create-content-input').value) {
+        createQuill.root.innerHTML = document.getElementById('create-content-input').value;
+    }
+});
+
+document.getElementById('create-tech-tip-modal').addEventListener('hidden.bs.modal', function () {
+    if (!createQuill) return;
+    createQuill.setText('');
+    document.getElementById('create-content-input').value = '';
+});
+
+
+// ── Delete Modal ─────────────────────────────────────────────────────────────
+document.getElementById('delete-tech-tip-modal').addEventListener('show.bs.modal', function (event) {
+    const btn = event.relatedTarget;
+    if (!btn) return;
+    this.querySelector('[name="id"]').value = btn.getAttribute('data-id');
+});
+
+// ── Publish Warning Workflow ──────────────────────────────────────────────────
+let pendingForm = null;
+
+document.getElementById('create-tech-tip-form').addEventListener('submit', function(e) {
+    if (createQuill.getText().trim() === '') {
+        document.getElementById('create-content-input').value = '';
+    } else {
+        document.getElementById('create-content-input').value = createQuill.root.innerHTML;
+    }
+    
+    var form = $(this);
+    if (typeof form.valid === 'function' && !form.valid()) {
+        e.preventDefault();
+        return false; // Stop! Let jQuery show the red error text.
+    }
+    
+    const isPublished = document.getElementById('isPublishedSwitchCreate').checked;
+    if (isPublished) {
+        e.preventDefault();
+        pendingForm = this;
+        new bootstrap.Modal(document.getElementById('publish-warning-modal')).show();
+    }
+});
+
+    let editQuillInstance = null;
+
+    window.loadEditModal = function(id) {
+        fetch(`?handler=EditModalPartial&id=${id}`)
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('edit-modal-container').innerHTML = html;
+                
+                // 1. Re-parse jQuery Validation for the injected HTML
+                $.validator.unobtrusive.parse('#edit-modal-container form');
+                
+                // 2. Initialize Quill
+                editQuillInstance = new Quill('#editor-edit-techtip', { 
+                    theme: 'snow',
+                    modules: { toolbar: TOOLBAR_CONFIG }
+                });
+                
+                applyQuillTooltips('editor-edit-techtip');
+                
+                editQuillInstance.on('text-change', () => {
+                    document.getElementById('edit-content-input').value = editQuillInstance.root.innerHTML;
+                });
+                
+                // Re-render icons for injected DOM
+                if (typeof lucide !== 'undefined') {
+                    lucide.createIcons();
+                }
+                
+                // 3. Open Modal
+                const modal = new bootstrap.Modal(document.getElementById('edit-tech-tip-modal'));
+                modal.show();
+            });
+    }
+
+    window.submitEditAjax = function(e, form) {
+        e.preventDefault();
+        
+        // Sync Quill to hidden input
+        if (editQuillInstance.getText().trim() === '') {
+            document.getElementById('edit-content-input').value = '';
+        } else {
+            document.getElementById('edit-content-input').value = editQuillInstance.root.innerHTML;
+        }
+
+        // Run jQuery Validation explicitly
+        if (!$(form).valid()) return false;
+
+        // Check Publish Warning
+        const isPublished = document.getElementById('isPublishedSwitchEdit').checked;
+        if (isPublished && !form.dataset.bypass) {
+            window.pendingForm = form;
+            const pubModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('publish-warning-modal'));
+            pubModal.show();
+            return false;
+        }
+
+        // Execute AJAX POST
+        const formData = new FormData(form);
+        fetch('?handler=EditAjax', {
+            method: 'POST',
+            body: formData,
+            headers: { 'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value }
+        })
+        .then(response => {
+            const contentType = response.headers.get("content-type");
+            if (contentType && contentType.indexOf("application/json") !== -1) {
+                // Success - Reload page to show updated table
+                window.location.reload();
+            } else {
+                // Validation Failed - Clean DOM, then replace HTML
+                response.text().then(html => {
+                    // 1. Clean up Bootstrap modal state
+                    const oldModalEl = document.getElementById('edit-tech-tip-modal');
+                    if (oldModalEl) {
+                        const oldModal = bootstrap.Modal.getInstance(oldModalEl);
+                        if (oldModal) oldModal.dispose();
+                    }
+                    
+                    // 2. Wipe orphaned backdrops and body locks
+                    document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                    document.body.classList.remove('modal-open');
+                    document.body.style.overflow = '';
+                    document.body.style.paddingRight = '';
+
+                    // 3. Inject new HTML
+                    document.getElementById('edit-modal-container').innerHTML = html;
+                    $.validator.unobtrusive.parse('#edit-modal-container form');
+                    editQuillInstance = new Quill('#editor-edit-techtip', { 
+                        theme: 'snow',
+                        modules: { toolbar: TOOLBAR_CONFIG }
+                    });
+                    
+                    applyQuillTooltips('editor-edit-techtip');
+                    
+                    editQuillInstance.on('text-change', () => {
+                        document.getElementById('edit-content-input').value = editQuillInstance.root.innerHTML;
+                    });
+
+                    if (typeof lucide !== 'undefined') {
+                        lucide.createIcons();
+                    }
+
+                    // 4. Re-open the modal to show validation errors
+                    const newModal = new bootstrap.Modal(document.getElementById('edit-tech-tip-modal'));
+                    newModal.show();
+                });
+            }
+        });
+    }
+
+document.getElementById('confirmPublishBtn').addEventListener('click', function() {
+    // Force JavaScript to check the global window object to bypass local scope traps
+    const targetForm = window.pendingForm || pendingForm;
+    
+    if (targetForm) {
+        // 1. Safely hide the warning modal to prevent aria-hidden focus traps
+        const pubModal = bootstrap.Modal.getInstance(document.getElementById('publish-warning-modal'));
+        if (pubModal) pubModal.hide();
+
+        // 2. Route the submission based on form architecture
+        if (targetForm.id === 'edit-tech-tip-form') {
+            // AJAX Flow (Edit Modal)
+            targetForm.dataset.bypass = "true"; 
+            const synthEvent = new Event('submit', { bubbles: true, cancelable: true });
+            window.submitEditAjax(synthEvent, targetForm);
+        } else {
+            // Native POST Flow (Create Modal)
+            targetForm.submit();
+        }
+    }
+});
+</script>
+
+@if (ViewData["OpenModal"] != null)
+{
+    <script>
+        $(function() {
+            var myModal = new bootstrap.Modal(document.getElementById('@ViewData["OpenModal"]'));
+            myModal.show();
+        });
+    </script>
+}
+}

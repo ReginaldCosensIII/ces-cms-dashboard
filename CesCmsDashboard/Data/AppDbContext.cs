@@ -33,7 +33,7 @@ public class AppDbContext : DbContext
         modelBuilder.Entity<TechTip>().HasData(
             new TechTip
             {
-                Id = 1,
+                Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 Title = "How to securely share passwords",
                 Slug = "how-to-securely-share-passwords",
                 Content = "<p>Use a secure password manager to share credentials.</p>",
