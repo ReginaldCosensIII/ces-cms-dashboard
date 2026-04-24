@@ -16,8 +16,8 @@
     <!-- Total Content -->
     <div class="col-sm-6 col-xl-4">
         <div class="stat-card">
-            <div class="stat-card-icon icon-slate">
-                <i data-lucide="files" class="icon-lg" style="color:var(--color-dark-slate);"></i>
+            <div class="stat-card-icon" style="background-color:rgba(128, 0, 0, 0.1);">
+                <i data-lucide="files" class="icon-lg" style="color:#800000;"></i>
             </div>
             <div class="stat-card-body">
                 <div class="stat-value">@Model.TotalFaqs</div>
@@ -46,13 +46,13 @@
         <div class="stat-card position-relative">
             @if (Model.IsDatabaseConnected)
             {
-                <div class="stat-card-icon" style="background-color:rgba(128, 0, 0, 0.1);">
-                    <i data-lucide="activity" class="icon-lg" style="color:#800000;"></i>
+                <div class="stat-card-icon icon-green">
+                    <i data-lucide="activity" class="icon-lg" style="color:#1a6644;"></i>
                 </div>
                 <div class="stat-card-body">
-                    <div class="stat-value" style="color:#800000;">Online</div>
+                    <div class="stat-value text-dark">Online</div>
                     <div class="stat-label">System Status</div>
-                    <div class="stat-sub fw-medium" style="color:#800000;">Online & Connected</div>
+                    <div class="stat-sub fw-medium" style="color:#1a6644;">Online & Connected</div>
                 </div>
             }
             else
@@ -89,8 +89,8 @@
     <div class="col-lg-6">
         <div class="card h-100">
             <div class="card-header d-flex align-items-center gap-2 px-4 py-3">
-                <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(128,0,0,0.1);">
-                    <i data-lucide="list-checks" class="icon-md" style="color:#800000;"></i>
+                <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(133,204,170,0.2);">
+                    <i data-lucide="list-checks" class="icon-md" style="color:#1a6644;"></i>
                 </div>
                 <h5 class="card-title fw-bold mb-0 activity-card-title">Recent Activity</h5>
             </div>
@@ -117,7 +117,7 @@
 
                             <li class="activity-item">
                                 <div class="activity-icon-wrap @iconClass">
-                                    <i data-lucide="@iconName" class="icon-sm"></i>
+                                    <i data-lucide="@iconName" class="icon-sm" style="color:@(activity.Type == "FAQ" ? "#800000" : "#1a6644");"></i>
                                 </div>
                                 <div class="activity-text">
                                     <span class="activity-action" title="@activity.Title">@activity.Title - @statusLabel</span>
