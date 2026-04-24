@@ -1,7 +1,6 @@
 using CesCmsDashboard.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace CesCmsDashboard.Pages;
 
@@ -16,38 +15,30 @@ public class ActivityItem
 public class IndexModel : PageModel
 {
     private readonly AppDbContext _context;
-    private readonly IConfiguration _config;
 
-    public IndexModel(AppDbContext context, IConfiguration config)
+    public IndexModel(AppDbContext context)
     {
         _context = context;
-        _config = config;
     }
 
-    public int PublishedFaqs { get; private set; }
-    public int PublishedTechTips { get; private set; }
-    public int DraftFaqs { get; private set; }
-    public int DraftTechTips { get; private set; }
+    public int TotalFaqs { get; private set; }
+    public int TotalTechTips { get; private set; }
     public bool IsDatabaseConnected { get; private set; }
-    public bool IsAiApiConfigured { get; set; }
     public List<ActivityItem> RecentActivities { get; set; } = new();
 
     public async Task OnGetAsync()
     {
         IsDatabaseConnected = await _context.Database.CanConnectAsync();
-        IsAiApiConfigured = !string.IsNullOrEmpty(_config["SEO_API_KEY"]);
 
-        PublishedFaqs    = await _context.Faqs.CountAsync(f => f.IsPublished);
-        DraftFaqs        = await _context.Faqs.CountAsync(f => !f.IsPublished);
-        PublishedTechTips = await _context.TechTips.CountAsync(t => t.IsPublished);
-        DraftTechTips    = await _context.TechTips.CountAsync(t => !t.IsPublished);
+        TotalFaqs = await _context.Faqs.CountAsync();
+        TotalTechTips = await _context.TechTips.CountAsync();
 
         var recentFaqs = await _context.Faqs
             .Select(f => new ActivityItem
             {
-                Title  = f.Question,
-                Type   = "FAQ",
-                Date   = f.UpdatedAt > DateTime.MinValue ? f.UpdatedAt : f.CreatedAt,
+                Title = f.Question,
+                Type = "FAQ",
+                Date = f.UpdatedAt > DateTime.MinValue ? f.UpdatedAt : f.CreatedAt,
                 Status = f.IsPublished ? "Published" : "Draft"
             })
             .ToListAsync();
@@ -55,9 +46,9 @@ public class IndexModel : PageModel
         var recentTips = await _context.TechTips
             .Select(t => new ActivityItem
             {
-                Title  = t.Title,
-                Type   = "Tech Tip",
-                Date   = t.UpdatedAt.HasValue ? t.UpdatedAt.Value : t.CreatedAt,
+                Title = t.Title,
+                Type = "Tech Tip",
+                Date = t.UpdatedAt.HasValue ? t.UpdatedAt.Value : t.CreatedAt,
                 Status = t.IsPublished ? "Published" : "Draft"
             })
             .ToListAsync();
