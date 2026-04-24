@@ -1,6 +1,7 @@
 using CesCmsDashboard.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace CesCmsDashboard.Pages;
 
@@ -15,15 +16,19 @@ public class ActivityItem
 public class IndexModel : PageModel
 {
     private readonly AppDbContext _context;
+    private readonly IConfiguration _config;
 
-    public IndexModel(AppDbContext context)
+    public IndexModel(AppDbContext context, IConfiguration config)
     {
         _context = context;
+        _config = config;
+        IsAiApiConfigured = !string.IsNullOrEmpty(_config["SEO_API_KEY"]);
     }
 
     public int TotalFaqs { get; private set; }
     public int TotalTechTips { get; private set; }
     public bool IsDatabaseConnected { get; private set; }
+    public bool IsAiApiConfigured { get; set; }
     public List<ActivityItem> RecentActivities { get; set; } = new();
 
     public async Task OnGetAsync()
