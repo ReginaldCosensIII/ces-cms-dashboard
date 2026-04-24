@@ -39,7 +39,9 @@
 
     /* Copilot Scroll Area */
     #copilot-chat-history {
-        max-height: 250px;
+        height: 250px; /* Changed from max-height so it can be resized */
+        min-height: 150px; /* Prevents the user from crushing it entirely */
+        resize: vertical; /* Adds the native drag-to-expand handle */
         overflow-y: auto;
         scrollbar-width: thin;
         padding-right: 8px;
