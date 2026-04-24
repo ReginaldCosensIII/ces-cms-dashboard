@@ -16,8 +16,8 @@
     <!-- Total Content -->
     <div class="col-sm-6 col-xl-4">
         <div class="stat-card">
-            <div class="stat-card-icon" style="background-color:rgba(128, 0, 0, 0.1);">
-                <i data-lucide="files" class="icon-lg" style="color:#800000;"></i>
+            <div class="stat-card-icon icon-green">
+                <i data-lucide="files" class="icon-lg" style="color:#1a6644;"></i>
             </div>
             <div class="stat-card-body">
                 <div class="stat-value">@Model.TotalFaqs</div>
@@ -116,14 +116,14 @@
                             var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt");
 
                             <li class="activity-item">
-                                <div class="activity-icon-wrap @iconClass" style="background:@(activity.Type == "FAQ" ? "rgba(128,0,0,0.1)" : "rgba(133,204,170,0.25)");">
-                                    <i data-lucide="@iconName" class="icon-sm" style="color:@(activity.Type == "FAQ" ? "#800000" : "#1a6644");"></i>
+                                <div class="activity-icon-wrap @iconClass" style="background:rgba(133, 204, 170, 0.2);">
+                                    <i data-lucide="@iconName" class="icon-sm" style="color:#1a6644;"></i>
                                 </div>
                                 <div class="activity-text">
                                     <span class="activity-action" title="@activity.Title">@activity.Title - @statusLabel</span>
                                     <span class="activity-time">
                                         <span class="badge rounded-pill px-2 py-1 me-1"
-                                              style="font-size:0.65rem;background:@(activity.Type == "FAQ" ? "rgba(128,0,0,0.1)" : "rgba(133,204,170,0.25)");color:@(activity.Type == "FAQ" ? "#800000" : "#1a6644");">
+                                              style="font-size:0.65rem;background:rgba(133, 204, 170, 0.2);color:#1a6644;">
                                             @typeLabel
                                         </span>
                                         @dateLabel
