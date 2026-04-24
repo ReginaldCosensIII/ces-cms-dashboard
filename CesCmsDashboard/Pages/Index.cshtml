@@ -116,7 +116,7 @@
                             var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt");
 
                             <li class="activity-item">
-                                <div class="activity-icon-wrap @iconClass">
+                                <div class="activity-icon-wrap @iconClass" style="background:@(activity.Type == "FAQ" ? "rgba(128,0,0,0.1)" : "rgba(133,204,170,0.25)");">
                                     <i data-lucide="@iconName" class="icon-sm" style="color:@(activity.Type == "FAQ" ? "#800000" : "#1a6644");"></i>
                                 </div>
                                 <div class="activity-text">
