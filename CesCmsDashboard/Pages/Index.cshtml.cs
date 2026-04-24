@@ -1,7 +1,10 @@
 using CesCmsDashboard.Data;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using OpenAI.Chat;
+using System.Text.Json;
 
 namespace CesCmsDashboard.Pages;
 
@@ -64,4 +67,25 @@ public class IndexModel : PageModel
             .Take(10)
             .ToList();
     }
+
+    public async Task<JsonResult> OnPostCopilotMessageAsync([FromBody] CopilotRequest request)
+    {
+        var apiKey = _config["SEO_API_KEY"];
+
+        if (string.IsNullOrEmpty(apiKey))
+        {
+            return new JsonResult(new { success = false, reply = "AI Copilot is not configured. Please add SEO_API_KEY to your app settings." });
+        }
+
+        var client = new ChatClient("gpt-4o-mini", apiKey);
+        var response = await client.CompleteChatAsync(request.Message);
+
+        // TODO: Implement EF Core Chat History Logging here (Save request.Message and response text to DB)
+        return new JsonResult(new { success = true, reply = response.Value.Content[0].Text });
+    }
+}
+
+public class CopilotRequest
+{
+    public string Message { get; set; } = string.Empty;
 }
