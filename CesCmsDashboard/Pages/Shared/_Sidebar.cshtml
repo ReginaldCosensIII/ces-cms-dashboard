@@ -2,6 +2,7 @@
     var currentPath = ViewContext.HttpContext.Request.Path;
     bool isHome    = currentPath == "/" || currentPath == "/Index";
     bool isFaqs    = currentPath.StartsWithSegments("/Faqs");
+    bool isTechTips = currentPath.StartsWithSegments("/TechTips");
     bool isBackups = currentPath.StartsWithSegments("/Backups");
 }
 
@@ -30,6 +31,16 @@
                         <i data-lucide="message-square-more"></i>
                     </span>
                     <span class="sidebar-text">FAQs Management</span>
+                </a>
+            </li>
+
+            <li>
+                <a class="sidebar-nav-link @(isTechTips ? "active" : "")"
+                   asp-area="" asp-page="/TechTips/Index" title="Tech Tips">
+                    <span class="sidebar-icon">
+                        <i data-lucide="lightbulb"></i>
+                    </span>
+                    <span class="sidebar-text">Tech Tips</span>
                 </a>
             </li>
 
