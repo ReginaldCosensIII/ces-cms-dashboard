@@ -1,71 +1,39 @@
-## Summary
+# Pull Request: [Feature/Fix Name]
 
-Provide a clear high-level summary of what this branch changes.
+## 📋 Summary
+[Provide a clear high-level summary of what this branch changes.]
 
-## Objective
+## 🎯 Objective
+[What was the specific task or implementation goal for this branch?]
 
-What was the specific task or implementation goal for this branch?
+## ✅ Scope Included
+- [ ] Task 1
+- [ ] Task 2
 
-## Scope included
+## ⏳ Scope Intentionally Deferred
+[List work intentionally not included to keep the review focused.]
+- [ ] 
 
-List the work that was intentionally included in this PR.
+## 🛠️ Implementation & Technical Notes
+[Describe design choices, technical tradeoffs, or architectural decisions made (e.g., UUID vs Int, Caching logic).]
 
-- 
-- 
-- 
+## 📂 Areas Changed
+- **Contracts/Models:** - **Services:** - **Endpoints:** - **Config:** 
 
-## Scope intentionally deferred
-
-List the work that was intentionally not included so the review stays aligned with the approved implementation slice.
-
-- 
-- 
-- 
-
-## Files or areas changed
-
-Summarize the main files, folders, or application areas touched by this branch.
-
-- 
-- 
-- 
-
-## Implementation notes
-
-Describe any important design choices, technical decisions, or tradeoffs made during implementation.
-
-## Manual verification completed
-
-Describe how the work was manually verified.
-
-- [ ] Build completed successfully
+## 🧪 Manual Verification Completed (Pre-Production IIS)
+- [ ] Build completed successfully (`dotnet build`)
 - [ ] App launched successfully
-- [ ] Core feature behavior was tested manually
-- [ ] Validation or error handling was reviewed
-- [ ] Documentation was reviewed and updated as needed
+- [ ] Core feature behavior tested (e.g., Browser output verified)
+- [ ] SEO/Schema validation (Google Rich Results Test)
+- [ ] Error handling/Logging reviewed
 
-Additional verification notes:
+## ⚠️ Blockers, Assumptions, or Risks
+[Document any risks or assumptions reviewers should know about.]
 
-## Blockers, assumptions, or risks
+## 📝 Documentation & Follow-up
+- [ ] README.md updated
+- [ ] ROADMAP.md updated
+- [ ] Follow-up Task: 
 
-Document any blockers encountered, assumptions made, or risks that reviewers should know about.
-
-## Documentation updates
-
-List which documentation files were updated as part of this branch.
-
-- [ ] README.md
-- [ ] WORKFLOW.md
-- [ ] docs/ARCHITECTURE.md
-- [ ] docs/DATABASE.md
-- [ ] docs/DEV_SETUP.md
-- [ ] docs/IMPLEMENTATION_PLAN.md
-- [ ] Other:
-
-## Done criteria check
-
-Briefly explain how this branch maps to the approved done criteria.
-
-## Follow-up recommendations
-
-List any sensible next steps, future branches, or follow-up tasks that should happen after this PR is reviewed.
+## 🏁 Done Criteria Check
+[Briefly explain how this branch maps to the approved done criteria.]
