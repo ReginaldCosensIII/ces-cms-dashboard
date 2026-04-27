@@ -84,6 +84,7 @@ namespace CesCmsDashboard.Pages.TechTips
                 existing.Content != techTip.Content || 
                 existing.VideoUrl != techTip.VideoUrl || 
                 existing.Category != techTip.Category || 
+                existing.DisplayOrder != techTip.DisplayOrder ||
                 existing.IsPublished != techTip.IsPublished)
             {
                 hasChanges = true;
@@ -97,6 +98,7 @@ namespace CesCmsDashboard.Pages.TechTips
                 existing.VideoUrl = techTip.VideoUrl;
                 existing.Content = techTip.Content;
                 existing.IsPublished = techTip.IsPublished;
+                existing.DisplayOrder = techTip.DisplayOrder;
                 existing.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();

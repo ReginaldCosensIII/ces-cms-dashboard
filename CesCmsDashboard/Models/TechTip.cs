@@ -25,6 +25,8 @@ namespace CesCmsDashboard.Models
 
         public bool IsPublished { get; set; } = false;
 
+        public int DisplayOrder { get; set; }
+
         public DateTime CreatedAt { get; set; }
 
         public DateTime? UpdatedAt { get; set; }
