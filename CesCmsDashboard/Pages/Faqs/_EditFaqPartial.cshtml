@@ -5,6 +5,7 @@
     <div class="modal-content border-0 shadow">
       <form id="editFaqForm" onsubmit="submitEditAjax(event, this)">
         <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="DisplayOrder" />
         <div class="modal-header bg-semantic-navbar border-bottom-0 text-white">
           <h5 class="modal-title fw-bold text-white" id="editFaqModalLabel">Edit FAQ</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
