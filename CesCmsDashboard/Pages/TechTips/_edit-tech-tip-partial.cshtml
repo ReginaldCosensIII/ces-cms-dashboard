@@ -5,7 +5,6 @@
     <div class="modal-content border-0 shadow">
       <form id="edit-tech-tip-form" onsubmit="submitEditAjax(event, this)">
         <input type="hidden" asp-for="Id" />
-        <input type="hidden" asp-for="DisplayOrder" />
         <div class="modal-header bg-semantic-navbar border-bottom-0 text-white">
           <h5 class="modal-title fw-bold text-white" id="edit-tech-tip-modal-label">Edit Tech Tip</h5>
           <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -42,7 +41,12 @@
               <span asp-validation-for="Content" class="text-danger"></span>
            </div>
            <div class="row g-4">
-              <div class="col-sm-12 d-flex align-items-end pb-1">
+              <div class="col-sm-6">
+                  <label class="form-label fw-bold text-muted small text-uppercase">Display Order</label>
+                  <input asp-for="DisplayOrder" type="number" min="1" class="form-control" />
+                  <span asp-validation-for="DisplayOrder" class="text-danger"></span>
+              </div>
+              <div class="col-sm-6 d-flex align-items-end pb-1">
                   <div class="form-check form-switch fs-5">
                       <input class="form-check-input" type="checkbox" role="switch" id="isPublishedSwitchEdit" asp-for="IsPublished">
                       <label class="form-check-label fs-6 ms-2" for="isPublishedSwitchEdit">Published to site</label>
