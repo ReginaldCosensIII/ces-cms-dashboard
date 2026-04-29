@@ -39,6 +39,15 @@ namespace CesCmsDashboard.Pages.TechTips
                 return Page();
             }
 
+            bool displayOrderExists = await _context.TechTips.AnyAsync(t => t.DisplayOrder == NewTechTip.DisplayOrder);
+            if (displayOrderExists)
+            {
+                ViewData["OpenModal"] = "create-tech-tip-modal";
+                ModelState.AddModelError("NewTechTip.DisplayOrder", "This display order number is already in use.");
+                TechTips = await _context.TechTips.OrderByDescending(t => t.CreatedAt).ToListAsync();
+                return Page();
+            }
+
             NewTechTip.Id = Guid.NewGuid();
             NewTechTip.CreatedAt = DateTime.UtcNow;
             
@@ -78,12 +87,19 @@ namespace CesCmsDashboard.Pages.TechTips
             var existing = await _context.TechTips.FindAsync(techTip.Id);
             if (existing == null) return NotFound();
 
+            bool isDuplicate = await _context.TechTips.AnyAsync(t => t.DisplayOrder == techTip.DisplayOrder && t.Id != techTip.Id);
+            if (isDuplicate) {
+                ModelState.AddModelError("DisplayOrder", "This display order number is already in use.");
+                return Partial("_edit-tech-tip-partial", techTip);
+            }
+
             bool hasChanges = false;
             if (existing.Title != techTip.Title || 
                 existing.Slug != techTip.Slug || 
                 existing.Content != techTip.Content || 
                 existing.VideoUrl != techTip.VideoUrl || 
                 existing.Category != techTip.Category || 
+                existing.DisplayOrder != techTip.DisplayOrder ||
                 existing.IsPublished != techTip.IsPublished)
             {
                 hasChanges = true;
@@ -97,6 +113,7 @@ namespace CesCmsDashboard.Pages.TechTips
                 existing.VideoUrl = techTip.VideoUrl;
                 existing.Content = techTip.Content;
                 existing.IsPublished = techTip.IsPublished;
+                existing.DisplayOrder = techTip.DisplayOrder;
                 existing.UpdatedAt = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
