@@ -25,7 +25,7 @@ namespace CesCmsDashboard.Pages.TechTips
 
         public async Task OnGetAsync()
         {
-            TechTips = await _context.TechTips.OrderByDescending(t => t.CreatedAt).ToListAsync();
+            TechTips = await _context.TechTips.OrderBy(t => t.DisplayOrder).ToListAsync();
         }
 
         public async Task<IActionResult> OnPostCreateAsync()
@@ -35,7 +35,7 @@ namespace CesCmsDashboard.Pages.TechTips
             if (!TryValidateModel(NewTechTip, nameof(NewTechTip)))
             {
                 ViewData["OpenModal"] = "create-tech-tip-modal";
-                TechTips = await _context.TechTips.OrderByDescending(t => t.CreatedAt).ToListAsync();
+                TechTips = await _context.TechTips.OrderBy(t => t.DisplayOrder).ToListAsync();
                 return Page();
             }
 
@@ -44,7 +44,7 @@ namespace CesCmsDashboard.Pages.TechTips
             {
                 ViewData["OpenModal"] = "create-tech-tip-modal";
                 ModelState.AddModelError("NewTechTip.DisplayOrder", "This display order number is already in use.");
-                TechTips = await _context.TechTips.OrderByDescending(t => t.CreatedAt).ToListAsync();
+                TechTips = await _context.TechTips.OrderBy(t => t.DisplayOrder).ToListAsync();
                 return Page();
             }
 
@@ -95,7 +95,6 @@ namespace CesCmsDashboard.Pages.TechTips
 
             bool hasChanges = false;
             if (existing.Title != techTip.Title || 
-                existing.Slug != techTip.Slug || 
                 existing.Content != techTip.Content || 
                 existing.VideoUrl != techTip.VideoUrl || 
                 existing.Category != techTip.Category || 
@@ -108,7 +107,6 @@ namespace CesCmsDashboard.Pages.TechTips
             if (hasChanges)
             {
                 existing.Title = techTip.Title;
-                existing.Slug = techTip.Slug;
                 existing.Category = techTip.Category;
                 existing.VideoUrl = techTip.VideoUrl;
                 existing.Content = techTip.Content;

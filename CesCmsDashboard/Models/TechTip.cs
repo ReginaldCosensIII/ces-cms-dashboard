@@ -11,9 +11,6 @@ namespace CesCmsDashboard.Models
         [MaxLength(250, ErrorMessage = "Title cannot exceed 250 characters.")]
         public string Title { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "A slug is required.")]
-        [MaxLength(250, ErrorMessage = "Slug cannot exceed 250 characters.")]
-        public string Slug { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Content is required.")]
         public string Content { get; set; } = string.Empty;

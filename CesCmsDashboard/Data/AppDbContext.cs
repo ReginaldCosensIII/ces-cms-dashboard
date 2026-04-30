@@ -28,14 +28,11 @@ public class AppDbContext : DbContext
             }
         );
 
-        modelBuilder.Entity<TechTip>().HasIndex(t => t.Slug).IsUnique();
-
         modelBuilder.Entity<TechTip>().HasData(
             new TechTip
             {
                 Id = Guid.Parse("22222222-2222-2222-2222-222222222222"),
                 Title = "How to securely share passwords",
-                Slug = "how-to-securely-share-passwords",
                 Content = "<p>Use a secure password manager to share credentials.</p>",
                 IsPublished = false,
                 CreatedAt = new DateTime(2026, 4, 20, 12, 0, 0, DateTimeKind.Utc)
