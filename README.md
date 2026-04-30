@@ -34,6 +34,16 @@ Out of scope for the current phase:
 - production deployment implementation
 - unnecessary redesigns or speculative expansion
 
+## Content Management: Tech Tips & FAQs
+
+### Management Workflow
+1. **Creation/Editing**: Use the dashboard to manage `FAQ` and `Tech Tip` entries.
+2. **Display Order**: The `DisplayOrder` field is used to sort content on the public website. Lower numbers appear first.
+3. **Publication**: Use the `IsPublished` toggle to control visibility. Drafts will not be delivered to the public API.
+
+### Cache Invalidation
+The public website fetches data from the `ces-backend-service` SEO endpoints. These endpoints utilize a memory cache with a 60-second TTL (Time-To-Live). Changes saved in the CMS Dashboard will be reflected on the public site within 60 seconds.
+
 ## Repository purpose
 
 This repository contains the standalone internal CMS Dashboard application. It acts as the "headless" content manager and API provider that will eventually serve data to the static CES website.
