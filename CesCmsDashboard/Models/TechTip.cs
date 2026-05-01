@@ -15,6 +15,7 @@ namespace CesCmsDashboard.Models
         [Required(ErrorMessage = "Content is required.")]
         public string Content { get; set; } = string.Empty;
 
+        [RegularExpression(@"^(https?\:\/\/)?(www\.)?(youtube\.com|youtu\.be|vimeo\.com)\/.+$", ErrorMessage = "Must be a valid YouTube or Vimeo URL.")]
         public string? VideoUrl { get; set; }
 
         [MaxLength(100)]
