@@ -123,10 +123,10 @@
                     <i class="bi bi-plus-circle"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-3" style="min-width: 200px; font-size: 0.85rem; z-index: 1050;">
-                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>Database:</strong> <span class="ms-3">@(Model.IsDatabaseConnected ? "Connected" : "Error")</span></li>
-                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>AI Copilot:</strong> <span class="ms-3">@(Model.IsAiApiConfigured ? "Ready" : "Pending")</span></li>
-                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>Web Ping:</strong> <span class="ms-3">OK</span></li>
-                    <li class="d-flex justify-content-between text-muted"><strong>SEO Injector:</strong> <span class="ms-3">Active</span></li>
+                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>Database:</strong> <span class="ms-3 @(Model.IsDatabaseConnected ? "text-success" : "text-danger")">@(Model.IsDatabaseConnected ? "Connected" : "Error")</span></li>
+                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>AI Copilot:</strong> <span class="ms-3 @(Model.IsAiApiConfigured ? "text-success" : "text-danger")">@(Model.IsAiApiConfigured ? "Ready" : "Pending")</span></li>
+                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>Web Ping:</strong> <span class="ms-3 @(Model.IsWebsiteOnline ? "text-success" : "text-danger")">@(Model.IsWebsiteOnline ? "Online" : "Offline")</span></li>
+                    <li class="d-flex justify-content-between text-muted"><strong>API Ping:</strong> <span class="ms-3 @(Model.IsApiOnline ? "text-success" : "text-danger")">@(Model.IsApiOnline ? "Online" : "Offline")</span></li>
                 </ul>
             </div>
         </div>
@@ -164,15 +164,19 @@
                             var iconName  = activity.Type == "FAQ" ? "message-square-more" : "lightbulb";
                             var iconClass = activity.Type == "FAQ" ? "activity-icon-edit"  : "activity-icon-plus";
                             var typeLabel = activity.Type;
-                            var statusLabel = activity.Status;
-                            var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt");
+                            var actionType = activity.Status; // Status holds ActionType (Created, Edited, Deleted)
+                            var badgeColor = actionType == "Created" ? "success" : (actionType == "Deleted" ? "danger" : "primary");
+                            var dateLabel = activity.Date.ToString("MMM dd, yyyy h:mm tt UTC");
 
                             <li class="activity-item">
                                 <div class="activity-icon-wrap @iconClass" style="background:rgba(133, 204, 170, 0.2);">
                                     <i data-lucide="@iconName" class="icon-sm" style="color:#1a6644;"></i>
                                 </div>
                                 <div class="activity-text">
-                                    <span class="activity-action" title="@activity.Title">@activity.Title - @statusLabel</span>
+                                    <span class="activity-action" title="@activity.Title">
+                                        @activity.Title 
+                                        <span class="badge bg-@badgeColor ms-2">@actionType</span>
+                                    </span>
                                     <span class="activity-time">
                                         <span class="badge rounded-pill px-2 py-1 me-1"
                                               style="font-size:0.65rem;background:rgba(133, 204, 170, 0.2);color:#1a6644;">

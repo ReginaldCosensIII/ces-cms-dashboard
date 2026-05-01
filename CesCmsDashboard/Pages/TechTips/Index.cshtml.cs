@@ -52,6 +52,7 @@ namespace CesCmsDashboard.Pages.TechTips
             NewTechTip.CreatedAt = DateTime.UtcNow;
             
             _context.TechTips.Add(NewTechTip);
+            _context.ActivityLogs.Add(new ActivityLog { ActionType = "Created", EntityType = "Tech Tip", EntityTitle = NewTechTip.Title, Timestamp = DateTime.UtcNow });
             await _context.SaveChangesAsync();
             
             return RedirectToPage();
@@ -63,6 +64,7 @@ namespace CesCmsDashboard.Pages.TechTips
             if (techTip != null)
             {
                 _context.TechTips.Remove(techTip);
+                _context.ActivityLogs.Add(new ActivityLog { ActionType = "Deleted", EntityType = "Tech Tip", EntityTitle = techTip.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
             }
 
@@ -114,6 +116,7 @@ namespace CesCmsDashboard.Pages.TechTips
                 existing.DisplayOrder = techTip.DisplayOrder;
                 existing.UpdatedAt = DateTime.UtcNow;
 
+                _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "Tech Tip", EntityTitle = existing.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
             }
             return new JsonResult(new { success = true });

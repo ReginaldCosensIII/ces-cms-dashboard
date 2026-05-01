@@ -57,6 +57,7 @@ namespace CesCmsDashboard.Pages.Faqs
             NewFaq.CreatedAt = DateTime.UtcNow;
             
             _context.Faqs.Add(NewFaq);
+            _context.ActivityLogs.Add(new ActivityLog { ActionType = "Created", EntityType = "FAQ", EntityTitle = NewFaq.Question, Timestamp = DateTime.UtcNow });
             await _context.SaveChangesAsync();
             
             return RedirectToPage();
@@ -93,6 +94,7 @@ namespace CesCmsDashboard.Pages.Faqs
                 faq.DisplayOrder = UpdatedFaq.DisplayOrder;
                 faq.UpdatedAt = DateTime.UtcNow;
 
+                _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "FAQ", EntityTitle = faq.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
             }
 
@@ -105,6 +107,7 @@ namespace CesCmsDashboard.Pages.Faqs
             if (faq != null)
             {
                 _context.Faqs.Remove(faq);
+                _context.ActivityLogs.Add(new ActivityLog { ActionType = "Deleted", EntityType = "FAQ", EntityTitle = faq.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
             }
 
@@ -153,6 +156,7 @@ namespace CesCmsDashboard.Pages.Faqs
                 existing.IsPublished = faq.IsPublished;
                 existing.UpdatedAt = DateTime.UtcNow;
 
+                _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "FAQ", EntityTitle = existing.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
             }
             return new JsonResult(new { success = true });

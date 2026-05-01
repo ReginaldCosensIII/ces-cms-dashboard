@@ -22,12 +22,14 @@ public class IndexModel : PageModel
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
     private readonly ILogger<IndexModel> _logger;
+    private readonly IHttpClientFactory _clientFactory;
 
-    public IndexModel(AppDbContext context, IConfiguration config, ILogger<IndexModel> logger)
+    public IndexModel(AppDbContext context, IConfiguration config, ILogger<IndexModel> logger, IHttpClientFactory clientFactory)
     {
         _context = context;
         _config = config;
         _logger = logger;
+        _clientFactory = clientFactory;
         IsAiApiConfigured = !string.IsNullOrEmpty(_config["SEO_API_KEY"]);
     }
 
@@ -35,6 +37,8 @@ public class IndexModel : PageModel
     public int TotalTechTips { get; private set; }
     public bool IsDatabaseConnected { get; private set; }
     public bool IsAiApiConfigured { get; set; }
+    public bool IsWebsiteOnline { get; private set; }
+    public bool IsApiOnline { get; private set; }
     public List<ActivityItem> RecentActivities { get; set; } = new();
 
     public async Task OnGetAsync()
@@ -44,31 +48,35 @@ public class IndexModel : PageModel
         TotalFaqs = await _context.Faqs.CountAsync();
         TotalTechTips = await _context.TechTips.CountAsync();
 
-        var recentFaqs = await _context.Faqs
-            .Select(f => new ActivityItem
-            {
-                Title = f.Question,
-                Type = "FAQ",
-                Date = f.UpdatedAt > DateTime.MinValue ? f.UpdatedAt : f.CreatedAt,
-                Status = f.IsPublished ? "Published" : "Draft"
-            })
-            .ToListAsync();
+        var client = _clientFactory.CreateClient();
+        client.Timeout = TimeSpan.FromSeconds(2);
 
-        var recentTips = await _context.TechTips
-            .Select(t => new ActivityItem
-            {
-                Title = t.Title,
-                Type = "Tech Tip",
-                Date = t.UpdatedAt.HasValue ? t.UpdatedAt.Value : t.CreatedAt,
-                Status = t.IsPublished ? "Published" : "Draft"
-            })
-            .ToListAsync();
+        var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
+        var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
 
-        RecentActivities = recentFaqs
-            .Concat(recentTips)
-            .OrderByDescending(x => x.Date)
+        try {
+            var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
+            IsWebsiteOnline = webResponse.IsSuccessStatusCode;
+        } catch { IsWebsiteOnline = false; }
+
+        try {
+            var apiResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, apiUrl));
+            IsApiOnline = apiResponse.IsSuccessStatusCode;
+        } catch { IsApiOnline = false; }
+
+        var recentLogs = await _context.ActivityLogs
+            .OrderByDescending(a => a.Timestamp)
             .Take(10)
-            .ToList();
+            .Select(a => new ActivityItem
+            {
+                Title = a.EntityTitle,
+                Type = a.EntityType,
+                Date = a.Timestamp,
+                Status = a.ActionType
+            })
+            .ToListAsync();
+
+        RecentActivities = recentLogs;
     }
 
     public async Task<JsonResult> OnPostCopilotMessageAsync([FromBody] CopilotRequest request)
