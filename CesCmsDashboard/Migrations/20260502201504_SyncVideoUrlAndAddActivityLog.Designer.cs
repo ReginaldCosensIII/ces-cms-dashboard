@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace CesCmsDashboard.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260501082701_SyncVideoUrlAndAddActivityLog")]
+    [Migration("20260502201504_SyncVideoUrlAndAddActivityLog")]
     partial class SyncVideoUrlAndAddActivityLog
     {
         /// <inheritdoc />
