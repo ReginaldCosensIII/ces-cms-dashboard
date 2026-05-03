@@ -48,8 +48,12 @@ public class IndexModel : PageModel
         TotalFaqs = await _context.Faqs.CountAsync();
         TotalTechTips = await _context.TechTips.CountAsync();
 
-        var client = _clientFactory.CreateClient();
-        client.Timeout = TimeSpan.FromSeconds(2);
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+        };
+        using var client = new HttpClient(handler);
+        client.Timeout = TimeSpan.FromSeconds(5);
 
         var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
         var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
@@ -57,12 +61,18 @@ public class IndexModel : PageModel
         try {
             var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
             IsWebsiteOnline = webResponse.IsSuccessStatusCode;
-        } catch { IsWebsiteOnline = false; }
+        } catch (Exception ex) { 
+            _logger.LogWarning("Website Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+            IsWebsiteOnline = false; 
+        }
 
         try {
             var apiResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, apiUrl));
             IsApiOnline = apiResponse.IsSuccessStatusCode;
-        } catch { IsApiOnline = false; }
+        } catch (Exception ex) { 
+            _logger.LogWarning("API Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+            IsApiOnline = false; 
+        }
 
         var recentLogs = await _context.ActivityLogs
             .OrderByDescending(a => a.Timestamp)
