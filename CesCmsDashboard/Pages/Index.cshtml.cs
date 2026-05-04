@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using OpenAI.Chat;
 using System.Text.Json;
 
 namespace CesCmsDashboard.Pages;
@@ -35,7 +34,6 @@ public class IndexModel : PageModel
     public int TotalFaqs { get; private set; }
     public int TotalTechTips { get; private set; }
     public bool IsDatabaseConnected { get; private set; }
-    public bool IsAiApiConfigured { get; set; }
     public bool IsWebsiteOnline { get; private set; }
     public bool IsApiOnline { get; private set; }
     public List<ActivityItem> RecentActivities { get; set; } = new();
@@ -79,27 +77,6 @@ public class IndexModel : PageModel
             _logger.LogWarning("API Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
             IsApiOnline = false; 
         }
-
-        var apiKey = _config["SEO_API_KEY"];
-        IsAiApiConfigured = false;
-        if (!string.IsNullOrEmpty(apiKey))
-        {
-            try
-            {
-                Console.WriteLine($"Starting Soft Ping for AI Copilot...");
-                var chatClient = new ChatClient("gpt-4o-mini", apiKey);
-                var options = new ChatCompletionOptions { MaxOutputTokenCount = 1 };
-                await chatClient.CompleteChatAsync([new SystemChatMessage("test")], options);
-                IsAiApiConfigured = true;
-                Console.WriteLine($"AI Copilot Soft Ping Success.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"PING FAILED | AI Copilot | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
-                _logger.LogWarning("AI Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
-                IsAiApiConfigured = false;
-            }
-        }
         */
 
         var recentLogs = await _context.ActivityLogs
@@ -116,34 +93,4 @@ public class IndexModel : PageModel
 
         RecentActivities = recentLogs;
     }
-
-    public async Task<JsonResult> OnPostCopilotMessageAsync([FromBody] CopilotRequest request)
-    {
-        var apiKey = _config["SEO_API_KEY"];
-
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            _logger.LogWarning("OnPostCopilotMessageAsync: SEO_API_KEY is missing or empty. AI Copilot request aborted.");
-            return new JsonResult(new { success = false, reply = "AI Copilot is not configured. Please add SEO_API_KEY to your app settings." });
-        }
-
-        try
-        {
-            var client = new ChatClient("gpt-4o-mini", apiKey);
-            var response = await client.CompleteChatAsync(request.Message);
-
-            // TODO: Implement EF Core Chat History Logging here (Save request.Message and response text to DB)
-            return new JsonResult(new { success = true, reply = response.Value.Content[0].Text });
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Failed to communicate with the OpenAI API during Copilot request.");
-            return new JsonResult(new { success = false, reply = "I am currently experiencing technical difficulties connecting to the AI service. Please check the system logs or try again later." });
-        }
-    }
-}
-
-public class CopilotRequest
-{
-    public string Message { get; set; } = string.Empty;
 }
