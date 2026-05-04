@@ -22,19 +22,22 @@ public class IndexModel : PageModel
     private readonly AppDbContext _context;
     private readonly IConfiguration _config;
     private readonly ILogger<IndexModel> _logger;
+    private readonly IHttpClientFactory _clientFactory;
 
-    public IndexModel(AppDbContext context, IConfiguration config, ILogger<IndexModel> logger)
+    public IndexModel(AppDbContext context, IConfiguration config, ILogger<IndexModel> logger, IHttpClientFactory clientFactory)
     {
         _context = context;
         _config = config;
         _logger = logger;
-        IsAiApiConfigured = !string.IsNullOrEmpty(_config["SEO_API_KEY"]);
+        _clientFactory = clientFactory;
     }
 
     public int TotalFaqs { get; private set; }
     public int TotalTechTips { get; private set; }
     public bool IsDatabaseConnected { get; private set; }
     public bool IsAiApiConfigured { get; set; }
+    public bool IsWebsiteOnline { get; private set; }
+    public bool IsApiOnline { get; private set; }
     public List<ActivityItem> RecentActivities { get; set; } = new();
 
     public async Task OnGetAsync()
@@ -44,31 +47,74 @@ public class IndexModel : PageModel
         TotalFaqs = await _context.Faqs.CountAsync();
         TotalTechTips = await _context.TechTips.CountAsync();
 
-        var recentFaqs = await _context.Faqs
-            .Select(f => new ActivityItem
+        var handler = new HttpClientHandler
+        {
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+            AllowAutoRedirect = true
+        };
+        using var client = new HttpClient(handler);
+        client.Timeout = TimeSpan.FromSeconds(5);
+
+        var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
+        var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
+
+        // TODO: Re-evaluate for Production Sprint 2
+        /*
+        Console.WriteLine($"Starting Ping for: {websiteUrl}");
+        try {
+            var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
+            IsWebsiteOnline = webResponse.IsSuccessStatusCode;
+        } catch (Exception ex) { 
+            Console.WriteLine($"PING FAILED | URL: {websiteUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
+            _logger.LogWarning("Website Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+            IsWebsiteOnline = false; 
+        }
+
+        Console.WriteLine($"Starting Ping for: {apiUrl}");
+        try {
+            var apiResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, apiUrl));
+            IsApiOnline = apiResponse.IsSuccessStatusCode;
+        } catch (Exception ex) { 
+            Console.WriteLine($"PING FAILED | URL: {apiUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
+            _logger.LogWarning("API Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+            IsApiOnline = false; 
+        }
+
+        var apiKey = _config["SEO_API_KEY"];
+        IsAiApiConfigured = false;
+        if (!string.IsNullOrEmpty(apiKey))
+        {
+            try
             {
-                Title = f.Question,
-                Type = "FAQ",
-                Date = f.UpdatedAt > DateTime.MinValue ? f.UpdatedAt : f.CreatedAt,
-                Status = f.IsPublished ? "Published" : "Draft"
+                Console.WriteLine($"Starting Soft Ping for AI Copilot...");
+                var chatClient = new ChatClient("gpt-4o-mini", apiKey);
+                var options = new ChatCompletionOptions { MaxOutputTokenCount = 1 };
+                await chatClient.CompleteChatAsync([new SystemChatMessage("test")], options);
+                IsAiApiConfigured = true;
+                Console.WriteLine($"AI Copilot Soft Ping Success.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PING FAILED | AI Copilot | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
+                _logger.LogWarning("AI Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+                IsAiApiConfigured = false;
+            }
+        }
+        */
+
+        var recentLogs = await _context.ActivityLogs
+            .OrderByDescending(a => a.Timestamp)
+            .Take(5)
+            .Select(a => new ActivityItem
+            {
+                Title = a.EntityTitle,
+                Type = a.EntityType,
+                Date = a.Timestamp,
+                Status = a.ActionType
             })
             .ToListAsync();
 
-        var recentTips = await _context.TechTips
-            .Select(t => new ActivityItem
-            {
-                Title = t.Title,
-                Type = "Tech Tip",
-                Date = t.UpdatedAt.HasValue ? t.UpdatedAt.Value : t.CreatedAt,
-                Status = t.IsPublished ? "Published" : "Draft"
-            })
-            .ToListAsync();
-
-        RecentActivities = recentFaqs
-            .Concat(recentTips)
-            .OrderByDescending(x => x.Date)
-            .Take(10)
-            .ToList();
+        RecentActivities = recentLogs;
     }
 
     public async Task<JsonResult> OnPostCopilotMessageAsync([FromBody] CopilotRequest request)

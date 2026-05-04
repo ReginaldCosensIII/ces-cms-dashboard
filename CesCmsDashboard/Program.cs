@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+builder.Services.AddHttpClient();
 
 var useInMemory = builder.Configuration.GetValue<bool>("UseInMemoryDb");
 if (builder.Environment.IsDevelopment() && useInMemory) {
