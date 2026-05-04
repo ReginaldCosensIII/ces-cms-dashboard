@@ -30,7 +30,6 @@ public class IndexModel : PageModel
         _config = config;
         _logger = logger;
         _clientFactory = clientFactory;
-        IsAiApiConfigured = !string.IsNullOrEmpty(_config["SEO_API_KEY"]);
     }
 
     public int TotalFaqs { get; private set; }
@@ -50,7 +49,8 @@ public class IndexModel : PageModel
 
         var handler = new HttpClientHandler
         {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true
+            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
+            AllowAutoRedirect = true
         };
         using var client = new HttpClient(handler);
         client.Timeout = TimeSpan.FromSeconds(5);
@@ -58,20 +58,45 @@ public class IndexModel : PageModel
         var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
         var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
 
+        Console.WriteLine($"Starting Ping for: {websiteUrl}");
         try {
             var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
             IsWebsiteOnline = webResponse.IsSuccessStatusCode;
         } catch (Exception ex) { 
+            Console.WriteLine($"PING FAILED | URL: {websiteUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
             _logger.LogWarning("Website Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
             IsWebsiteOnline = false; 
         }
 
+        Console.WriteLine($"Starting Ping for: {apiUrl}");
         try {
             var apiResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, apiUrl));
             IsApiOnline = apiResponse.IsSuccessStatusCode;
         } catch (Exception ex) { 
+            Console.WriteLine($"PING FAILED | URL: {apiUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
             _logger.LogWarning("API Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
             IsApiOnline = false; 
+        }
+
+        var apiKey = _config["SEO_API_KEY"];
+        IsAiApiConfigured = false;
+        if (!string.IsNullOrEmpty(apiKey))
+        {
+            try
+            {
+                Console.WriteLine($"Starting Soft Ping for AI Copilot...");
+                var chatClient = new ChatClient("gpt-4o-mini", apiKey);
+                var options = new ChatCompletionOptions { MaxOutputTokenCount = 1 };
+                await chatClient.CompleteChatAsync([new SystemChatMessage("test")], options);
+                IsAiApiConfigured = true;
+                Console.WriteLine($"AI Copilot Soft Ping Success.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"PING FAILED | AI Copilot | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
+                _logger.LogWarning("AI Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
+                IsAiApiConfigured = false;
+            }
         }
 
         var recentLogs = await _context.ActivityLogs
