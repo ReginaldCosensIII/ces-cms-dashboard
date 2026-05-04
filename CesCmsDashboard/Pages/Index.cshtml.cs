@@ -58,6 +58,8 @@ public class IndexModel : PageModel
         var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
         var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
 
+        // TODO: Re-evaluate for Production Sprint 2
+        /*
         Console.WriteLine($"Starting Ping for: {websiteUrl}");
         try {
             var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
@@ -98,10 +100,11 @@ public class IndexModel : PageModel
                 IsAiApiConfigured = false;
             }
         }
+        */
 
         var recentLogs = await _context.ActivityLogs
             .OrderByDescending(a => a.Timestamp)
-            .Take(10)
+            .Take(5)
             .Select(a => new ActivityItem
             {
                 Title = a.EntityTitle,

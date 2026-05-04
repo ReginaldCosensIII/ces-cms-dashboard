@@ -49,7 +49,7 @@
 
     /* Recent Activity Feed Scroll Area */
     #recent-activity-feed {
-        max-height: 250px; /* Matches the initial height of the Copilot chat */
+        /* max-height: 250px;  Removed to fit 5 entries cleanly */
         overflow-y: auto;
         scrollbar-width: thin;
         padding-right: 8px;
@@ -118,6 +118,7 @@
                     <div class="stat-sub text-danger fw-medium">Database Error</div>
                 </div>
             }
+            <!-- TODO: Re-evaluate for Production Sprint 2
             <div class="dropdown position-absolute bottom-0 end-0 m-2">
                 <a href="#" class="text-muted text-decoration-none px-2" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem;">
                     <i class="bi bi-plus-circle"></i>
@@ -129,6 +130,7 @@
                     <li class="d-flex justify-content-between text-muted"><strong>API Ping:</strong> <span class="ms-3 @(Model.IsApiOnline ? "text-success" : "text-danger")">@(Model.IsApiOnline ? "Online" : "Offline")</span></li>
                 </ul>
             </div>
+            -->
         </div>
     </div>
 
