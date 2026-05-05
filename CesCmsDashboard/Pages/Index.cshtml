@@ -4,57 +4,6 @@
     ViewData["Title"] = "Dashboard Home";
 }
 
-<style>
-    /* Prevent text selection while dragging */
-    .no-select { user-select: none; -webkit-user-select: none; }
-
-    /* The drag handle */
-    .dashboard-resizer {
-        width: 12px;
-        cursor: col-resize;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin: 0 4px;
-        transition: background 0.2s;
-        border-radius: 6px;
-    }
-    .dashboard-resizer:hover, .dashboard-resizer.dragging {
-        background-color: rgba(26, 102, 68, 0.1); /* Brand Light Green tint */
-    }
-    /* Subtle grip lines */
-    .dashboard-resizer::after {
-        content: "";
-        height: 30px;
-        width: 2px;
-        background-color: #cbd5e1;
-        border-right: 2px solid transparent;
-        border-left: 2px solid transparent;
-    }
-
-    /* Establish symmetrical starting height for decoupled cards */
-    .dashboard-split-card {
-        min-height: 380px;
-    }
-
-    /* Copilot Scroll Area */
-    #copilot-chat-history {
-        height: 250px; /* Changed from max-height so it can be resized */
-        min-height: 150px; /* Prevents the user from crushing it entirely */
-        resize: vertical; /* Adds the native drag-to-expand handle */
-        overflow-y: auto;
-        scrollbar-width: thin;
-        padding-right: 8px;
-    }
-
-    /* Recent Activity Feed Scroll Area */
-    #recent-activity-feed {
-        /* max-height: 250px;  Removed to fit 5 entries cleanly */
-        overflow-y: auto;
-        scrollbar-width: thin;
-        padding-right: 8px;
-    }
-</style>
 
 <!-- Page Header -->
 <div class="page-header">
@@ -118,29 +67,28 @@
                     <div class="stat-sub text-danger fw-medium">Database Error</div>
                 </div>
             }
-            <!-- TODO: Re-evaluate for Production Sprint 2
+            @* TODO: Re-evaluate for Production Sprint 2
             <div class="dropdown position-absolute bottom-0 end-0 m-2">
                 <a href="#" class="text-muted text-decoration-none px-2" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 1.2rem;">
                     <i class="bi bi-plus-circle"></i>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end shadow border-0 p-3" style="min-width: 200px; font-size: 0.85rem; z-index: 1050;">
                     <li class="d-flex justify-content-between mb-2 text-muted"><strong>Database:</strong> <span class="ms-3 @(Model.IsDatabaseConnected ? "text-success" : "text-danger")">@(Model.IsDatabaseConnected ? "Connected" : "Error")</span></li>
-                    <li class="d-flex justify-content-between mb-2 text-muted"><strong>AI Copilot:</strong> <span class="ms-3 @(Model.IsAiApiConfigured ? "text-success" : "text-danger")">@(Model.IsAiApiConfigured ? "Ready" : "Pending")</span></li>
                     <li class="d-flex justify-content-between mb-2 text-muted"><strong>Web Ping:</strong> <span class="ms-3 @(Model.IsWebsiteOnline ? "text-success" : "text-danger")">@(Model.IsWebsiteOnline ? "Online" : "Offline")</span></li>
                     <li class="d-flex justify-content-between text-muted"><strong>API Ping:</strong> <span class="ms-3 @(Model.IsApiOnline ? "text-success" : "text-danger")">@(Model.IsApiOnline ? "Online" : "Offline")</span></li>
                 </ul>
             </div>
-            -->
+            *@
         </div>
     </div>
 
 </div>
 
 <!-- Detail Cards Row -->
-<div class="d-flex flex-column flex-lg-row align-items-start" id="dashboard-split-container">
+<div class="row mb-4">
 
     <!-- Left: Recent Activity (Database-wired) -->
-    <div id="panel-recent-activity" style="width: 40%; flex-shrink: 0;">
+    <div class="col-lg-10 mx-auto">
         <div class="card dashboard-split-card">
             <div class="card-header d-flex align-items-center gap-2 px-4 py-3">
                 <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(133,204,170,0.2);">
@@ -196,225 +144,3 @@
         </div>
     </div>
 
-    <!-- Draggable Splitter Handle -->
-    <div class="dashboard-resizer d-none d-lg-flex" id="dashboard-drag-handle"></div>
-
-    <!-- Right: CES SEO Copilot -->
-    <div id="panel-copilot" style="flex: 1; min-width: 0;">
-        <div class="card dashboard-split-card d-flex flex-column">
-            <div class="card-header d-flex align-items-center gap-2 px-4 py-3"
-                 style="background:linear-gradient(135deg,var(--color-dark-slate-deep),var(--color-dark-slate))!important;border-radius:14px 14px 0 0!important;">
-                <div class="stat-card-icon" style="width:34px;height:34px;border-radius:8px;background:rgba(133,204,170,0.2);">
-                    <i data-lucide="sparkles" class="icon-md" style="color:var(--color-light-green);"></i>
-                </div>
-                <h5 class="card-title fw-bold mb-0 text-white" style="font-size:0.95rem;">
-                    CES SEO Copilot
-                </h5>
-                <span class="ms-auto badge" style="background:rgba(133,204,170,0.18);color:var(--color-light-green);border-radius:6px;font-size:0.68rem;letter-spacing:0.05em;">BETA</span>
-            </div>
-            <div class="card-body d-flex flex-column px-4 pt-4">
-
-                @Html.AntiForgeryToken()
-
-                <!-- Chat history area -->
-                <div id="copilot-chat-history"
-                     class="flex-grow-1 p-3 mb-3 rounded-3 overflow-auto"
-                     style="min-height:180px;background:#f8fafc;border:1px solid rgba(47,79,79,0.08);">
-                    <div class="d-flex mb-3">
-                        <div class="chat-bubble">
-                            <strong style="color:var(--color-dark-slate);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">Copilot</strong><br>
-                            Welcome to the SEO Copilot. How can I assist you with your content today?
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Input area -->
-                <div class="input-group mt-auto">
-                    <input type="text" class="form-control"
-                           placeholder="Ask Copilot a question..."
-                           aria-label="Ask the SEO Copilot a question"
-                           id="copilot-input"
-                           style="border-right:none;border-radius:9px 0 0 9px;">
-                    <button class="btn d-flex align-items-center gap-2 px-3"
-                            id="copilot-send"
-                            type="button"
-                            style="background:var(--color-dark-slate);color:#fff;border-radius:0 9px 9px 0;">
-                        <i data-lucide="send" class="icon-sm"></i>
-                        <span class="d-none d-sm-inline" style="font-size:0.85rem;">Send</span>
-                    </button>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
-</div>
-
-@section Scripts {
-<script>
-(function () {
-    'use strict';
-
-    var chatHistory = document.getElementById('copilot-chat-history');
-    var inputEl     = document.getElementById('copilot-input');
-    var sendBtn     = document.getElementById('copilot-send');
-
-    // ── Helpers ────────────────────────────────────────────────────────────────
-
-    function scrollToBottom() {
-        chatHistory.scrollTop = chatHistory.scrollHeight;
-    }
-
-    /** Append a standard Copilot bubble (left-aligned, matches welcome message). */
-    function appendCopilotBubble(text) {
-        var wrap = document.createElement('div');
-        wrap.className = 'd-flex mb-3';
-        wrap.innerHTML =
-            '<div class="chat-bubble">' +
-                '<strong style="color:var(--color-dark-slate);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">Copilot</strong><br>' +
-                escapeHtml(text) +
-            '</div>';
-        chatHistory.appendChild(wrap);
-        scrollToBottom();
-        return wrap;
-    }
-
-    /** Append a user message bubble (right-aligned, dark-slate accent). */
-    function appendUserBubble(text) {
-        var wrap = document.createElement('div');
-        wrap.className = 'd-flex mb-3 justify-content-end';
-        wrap.innerHTML =
-            '<div class="chat-bubble" style="background:var(--color-dark-slate);color:#fff;margin-left:auto;margin-right:0;">' +
-                '<strong style="color:var(--color-light-green);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">You</strong><br>' +
-                escapeHtml(text) +
-            '</div>';
-        chatHistory.appendChild(wrap);
-        scrollToBottom();
-        return wrap;
-    }
-
-    /** Append a temporary "thinking..." bubble, returns the wrapper element. */
-    function appendThinkingBubble() {
-        var wrap = document.createElement('div');
-        wrap.className = 'd-flex mb-3';
-        wrap.innerHTML =
-            '<div class="chat-bubble" style="color:#6c757d;font-style:italic;">' +
-                '<strong style="color:var(--color-dark-slate);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;">Copilot</strong><br>' +
-                'Thinking…' +
-            '</div>';
-        chatHistory.appendChild(wrap);
-        scrollToBottom();
-        return wrap;
-    }
-
-    /** Basic HTML escaping to prevent XSS in chat content. */
-    function escapeHtml(str) {
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    // ── Core Send Logic ────────────────────────────────────────────────────────
-
-    function sendMessage() {
-        var message = inputEl.value.trim();
-        if (!message) return;
-
-        // 1. Append user bubble and clear input
-        appendUserBubble(message);
-        inputEl.value = '';
-
-        // 2. Disable controls and show thinking bubble
-        sendBtn.disabled = true;
-        inputEl.disabled = true;
-        var thinkingBubble = appendThinkingBubble();
-
-        // 3. Retrieve CSRF token
-        var tokenInput = document.querySelector('input[name="__RequestVerificationToken"]');
-        var token = tokenInput ? tokenInput.value : '';
-
-        // 4. POST to Razor Page handler
-        fetch('?handler=CopilotMessage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': token
-            },
-            body: JSON.stringify({ message: message })
-        })
-        .then(function (res) { return res.json(); })
-        .then(function (data) {
-            // 5. Remove thinking bubble
-            if (thinkingBubble && thinkingBubble.parentNode) {
-                thinkingBubble.parentNode.removeChild(thinkingBubble);
-            }
-            // 6. Append AI reply
-            var replyText = (data && data.reply) ? data.reply : 'Sorry, I could not process your request.';
-            appendCopilotBubble(replyText);
-        })
-        .catch(function () {
-            if (thinkingBubble && thinkingBubble.parentNode) {
-                thinkingBubble.parentNode.removeChild(thinkingBubble);
-            }
-            appendCopilotBubble('An error occurred. Please try again.');
-        })
-        .finally(function () {
-            sendBtn.disabled = false;
-            inputEl.disabled = false;
-            inputEl.focus();
-        });
-    }
-
-    // ── Event Listeners ────────────────────────────────────────────────────────
-
-    sendBtn.addEventListener('click', sendMessage);
-
-    inputEl.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            sendMessage();
-        }
-    });
-
-}());
-
-// ── Draggable Panel Resizer ────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', function () {
-    var resizer   = document.getElementById('dashboard-drag-handle');
-    var leftPanel = document.getElementById('panel-recent-activity');
-    var container = document.getElementById('dashboard-split-container');
-
-    var isDragging = false;
-
-    resizer.addEventListener('mousedown', function (e) {
-        isDragging = true;
-        resizer.classList.add('dragging');
-        document.body.classList.add('no-select');
-    });
-
-    document.addEventListener('mousemove', function (e) {
-        if (!isDragging) return;
-
-        var containerRect = container.getBoundingClientRect();
-        var newWidth = ((e.clientX - containerRect.left) / containerRect.width) * 100;
-
-        // Clamp: min 25%, max 75%
-        if (newWidth < 25) newWidth = 25;
-        if (newWidth > 75) newWidth = 75;
-
-        leftPanel.style.width = newWidth + '%';
-    });
-
-    document.addEventListener('mouseup', function () {
-        if (isDragging) {
-            isDragging = false;
-            resizer.classList.remove('dragging');
-            document.body.classList.remove('no-select');
-        }
-    });
-});
-</script>
-}
