@@ -12,11 +12,11 @@ builder.Services.AddHttpClient("SeoCacheClient", client =>
 {
     if (builder.Environment.IsProduction())
     {
-        client.BaseAddress = new Uri("http://127.0.0.1:5512");
+        client.BaseAddress = new Uri("https://www.cesitservice.com");
     }
     else
     {
-        client.BaseAddress = new Uri("http://localhost:5000");
+        client.BaseAddress = new Uri("https://test.cesrebuild.com");
     }
 });
 
