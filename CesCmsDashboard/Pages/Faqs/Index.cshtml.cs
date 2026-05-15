@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using CesCmsDashboard.Data;
 using CesCmsDashboard.Models;
+using Microsoft.Extensions.Logging;
 
 namespace CesCmsDashboard.Pages.Faqs
 {
@@ -10,11 +11,13 @@ namespace CesCmsDashboard.Pages.Faqs
     {
         private readonly AppDbContext _context;
         private readonly IHttpClientFactory _clientFactory;
+        private readonly ILogger<IndexModel> _logger;
 
-        public IndexModel(AppDbContext context, IHttpClientFactory clientFactory)
+        public IndexModel(AppDbContext context, IHttpClientFactory clientFactory, ILogger<IndexModel> logger)
         {
             _context = context;
             _clientFactory = clientFactory;
+            _logger = logger;
         }
 
         public IList<Faq> Faq { get;set; } = default!;
@@ -178,9 +181,9 @@ namespace CesCmsDashboard.Pages.Faqs
                 var client = _clientFactory.CreateClient("SeoCacheClient");
                 _ = client.PostAsync("/api/seo/flush-cache", null);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                // Suppress exceptions for fire-and-forget
+                _logger.LogError(ex, "Failed to flush SEO cache via webhook.");
             }
         }
     }
