@@ -60,7 +60,7 @@ namespace CesCmsDashboard.Pages.TechTips
             _context.ActivityLogs.Add(new ActivityLog { ActionType = "Created", EntityType = "Tech Tip", EntityTitle = NewTechTip.Title, Timestamp = DateTime.UtcNow });
             await _context.SaveChangesAsync();
 
-            FireCacheWebhookAsync();
+            await FireCacheWebhookAsync();
             
             return RedirectToPage();
         }
@@ -74,7 +74,7 @@ namespace CesCmsDashboard.Pages.TechTips
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Deleted", EntityType = "Tech Tip", EntityTitle = techTip.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
 
-                FireCacheWebhookAsync();
+                await FireCacheWebhookAsync();
             }
 
             return RedirectToPage();
@@ -128,20 +128,26 @@ namespace CesCmsDashboard.Pages.TechTips
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "Tech Tip", EntityTitle = existing.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
 
-                FireCacheWebhookAsync();
+                await FireCacheWebhookAsync();
             }
             return new JsonResult(new { success = true });
         }
-        private void FireCacheWebhookAsync()
+        private async Task FireCacheWebhookAsync()
         {
             try
             {
                 var client = _clientFactory.CreateClient("SeoCacheClient");
-                _ = client.PostAsync("/api/seo/flush-cache", null);
+                var response = await client.PostAsync("/api/seo/flush-cache", null);
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("Webhook returned unsuccessful status code: {StatusCode}", response.StatusCode);
+                    TempData["WarningMessage"] = "Content saved successfully, but the public website cache could not be instantly updated.";
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Failed to flush SEO cache via webhook.");
+                TempData["WarningMessage"] = "Content saved successfully, but the public website cache could not be instantly updated.";
             }
         }
     }
