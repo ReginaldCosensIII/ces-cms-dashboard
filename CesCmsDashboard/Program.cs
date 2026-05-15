@@ -16,7 +16,7 @@ builder.Services.AddHttpClient("SeoCacheClient", client =>
     }
     else
     {
-        client.BaseAddress = new Uri("https://test.cesrebuild.com");
+        client.BaseAddress = new Uri("http://test.cesrebuild.com");
     }
 });
 
