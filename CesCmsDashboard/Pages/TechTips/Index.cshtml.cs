@@ -134,7 +134,7 @@ namespace CesCmsDashboard.Pages.TechTips
             try
             {
                 var client = _clientFactory.CreateClient("SeoCacheClient");
-                _ = client.PostAsync("/api/seo/flush-cache", null);
+                _ = client.PostAsync("/seo/flush-cache", null);
             }
             catch (Exception)
             {
