@@ -45,39 +45,7 @@ public class IndexModel : PageModel
         TotalFaqs = await _context.Faqs.CountAsync();
         TotalTechTips = await _context.TechTips.CountAsync();
 
-        var handler = new HttpClientHandler
-        {
-            ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true,
-            AllowAutoRedirect = true
-        };
-        using var client = new HttpClient(handler);
-        client.Timeout = TimeSpan.FromSeconds(5);
 
-        var websiteUrl = _config["SystemStatus:WebsiteUrl"] ?? "https://www.cesitservice.com";
-        var apiUrl = _config["SystemStatus:ApiUrl"] ?? "https://test.cesrebuild.com/api/seo/faqs";
-
-        // TODO: Re-evaluate for Production Sprint 2
-        /*
-        Console.WriteLine($"Starting Ping for: {websiteUrl}");
-        try {
-            var webResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, websiteUrl));
-            IsWebsiteOnline = webResponse.IsSuccessStatusCode;
-        } catch (Exception ex) { 
-            Console.WriteLine($"PING FAILED | URL: {websiteUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
-            _logger.LogWarning("Website Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
-            IsWebsiteOnline = false; 
-        }
-
-        Console.WriteLine($"Starting Ping for: {apiUrl}");
-        try {
-            var apiResponse = await client.SendAsync(new HttpRequestMessage(HttpMethod.Head, apiUrl));
-            IsApiOnline = apiResponse.IsSuccessStatusCode;
-        } catch (Exception ex) { 
-            Console.WriteLine($"PING FAILED | URL: {apiUrl} | ERROR: {ex.GetType().Name} | MSG: {ex.Message} | INNER: {ex.InnerException?.Message}");
-            _logger.LogWarning("API Ping Failed. Message: {Message}. Inner: {InnerMessage}", ex.Message, ex.InnerException?.Message);
-            IsApiOnline = false; 
-        }
-        */
 
         var recentLogs = await _context.ActivityLogs
             .OrderByDescending(a => a.Timestamp)
