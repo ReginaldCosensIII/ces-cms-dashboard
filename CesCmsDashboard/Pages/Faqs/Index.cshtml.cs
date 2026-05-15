@@ -9,10 +9,12 @@ namespace CesCmsDashboard.Pages.Faqs
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public IndexModel(AppDbContext context)
+        public IndexModel(AppDbContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         public IList<Faq> Faq { get;set; } = default!;
@@ -60,6 +62,8 @@ namespace CesCmsDashboard.Pages.Faqs
             _context.ActivityLogs.Add(new ActivityLog { ActionType = "Created", EntityType = "FAQ", EntityTitle = NewFaq.Question, Timestamp = DateTime.UtcNow });
             await _context.SaveChangesAsync();
             
+            FireCacheWebhookAsync();
+
             return RedirectToPage();
         }
 
@@ -96,6 +100,8 @@ namespace CesCmsDashboard.Pages.Faqs
 
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "FAQ", EntityTitle = faq.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
+
+                FireCacheWebhookAsync();
             }
 
             return RedirectToPage();
@@ -109,6 +115,8 @@ namespace CesCmsDashboard.Pages.Faqs
                 _context.Faqs.Remove(faq);
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Deleted", EntityType = "FAQ", EntityTitle = faq.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
+
+                FireCacheWebhookAsync();
             }
 
             return RedirectToPage();
@@ -158,8 +166,22 @@ namespace CesCmsDashboard.Pages.Faqs
 
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "FAQ", EntityTitle = existing.Question, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
+
+                FireCacheWebhookAsync();
             }
             return new JsonResult(new { success = true });
+        }
+        private void FireCacheWebhookAsync()
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient("SeoCacheClient");
+                _ = client.PostAsync("/api/seo/flush-cache", null);
+            }
+            catch (Exception)
+            {
+                // Suppress exceptions for fire-and-forget
+            }
         }
     }
 }

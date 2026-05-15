@@ -8,6 +8,18 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddHttpClient();
 
+builder.Services.AddHttpClient("SeoCacheClient", client =>
+{
+    if (builder.Environment.IsProduction())
+    {
+        client.BaseAddress = new Uri("http://127.0.0.1:5512");
+    }
+    else
+    {
+        client.BaseAddress = new Uri("http://localhost:5000");
+    }
+});
+
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();

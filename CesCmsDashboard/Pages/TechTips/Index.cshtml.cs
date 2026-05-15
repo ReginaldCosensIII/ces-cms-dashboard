@@ -9,10 +9,12 @@ namespace CesCmsDashboard.Pages.TechTips
     public class IndexModel : PageModel
     {
         private readonly AppDbContext _context;
+        private readonly IHttpClientFactory _clientFactory;
 
-        public IndexModel(AppDbContext context)
+        public IndexModel(AppDbContext context, IHttpClientFactory clientFactory)
         {
             _context = context;
+            _clientFactory = clientFactory;
         }
 
         public IList<TechTip> TechTips { get;set; } = default!;
@@ -54,6 +56,8 @@ namespace CesCmsDashboard.Pages.TechTips
             _context.TechTips.Add(NewTechTip);
             _context.ActivityLogs.Add(new ActivityLog { ActionType = "Created", EntityType = "Tech Tip", EntityTitle = NewTechTip.Title, Timestamp = DateTime.UtcNow });
             await _context.SaveChangesAsync();
+
+            FireCacheWebhookAsync();
             
             return RedirectToPage();
         }
@@ -66,6 +70,8 @@ namespace CesCmsDashboard.Pages.TechTips
                 _context.TechTips.Remove(techTip);
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Deleted", EntityType = "Tech Tip", EntityTitle = techTip.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
+
+                FireCacheWebhookAsync();
             }
 
             return RedirectToPage();
@@ -118,8 +124,22 @@ namespace CesCmsDashboard.Pages.TechTips
 
                 _context.ActivityLogs.Add(new ActivityLog { ActionType = "Edited", EntityType = "Tech Tip", EntityTitle = existing.Title, Timestamp = DateTime.UtcNow });
                 await _context.SaveChangesAsync();
+
+                FireCacheWebhookAsync();
             }
             return new JsonResult(new { success = true });
+        }
+        private void FireCacheWebhookAsync()
+        {
+            try
+            {
+                var client = _clientFactory.CreateClient("SeoCacheClient");
+                _ = client.PostAsync("/api/seo/flush-cache", null);
+            }
+            catch (Exception)
+            {
+                // Suppress exceptions for fire-and-forget
+            }
         }
     }
 }
