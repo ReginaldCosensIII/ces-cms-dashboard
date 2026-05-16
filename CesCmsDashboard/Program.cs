@@ -10,7 +10,7 @@ builder.Host.UseSerilog((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration
 // Add services to the container.
 builder.Services.AddRazorPages();
 builder.Services.AddDataProtection()
-    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\Keys\ces-cms-dashboard"));
+    .PersistKeysToFileSystem(new DirectoryInfo(@"C:\keys\ces-cms-dashboard"));
 builder.Services.AddHttpClient();
 
 builder.Services.AddHttpClient("SeoCacheClient", client =>
